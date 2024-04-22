@@ -4,13 +4,17 @@
 #include <GLFW/glfw3.h>
 
 int init(GLFWwindow* &window);
-void createTriangle(GLuint &vao, int &size);
+void processInput(GLFWwindow*& window);
+void createTriangle(GLuint& VAO, int& numVertices, int& numIndices);
 void createShaders();
 void createProgram(GLuint& programID, const char* vertexShaderPath, const char* fragmentShaderPath);
 void loadFile(const char* filename, char*& output);
 
 // Program IDs
 GLuint simpleProgramID;
+
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;
 
 int main()
 {
@@ -19,29 +23,29 @@ int main()
 	if (result != 0) { return result; }
 
 	GLuint triangleVAO;
-	int triangleSize;
-	createTriangle(triangleVAO, triangleSize);
+	int numVertices;
+	int numIndices;
+	createTriangle(triangleVAO, numVertices, numIndices);
 	createShaders();
 
 	// Create Viewport
-	glViewport(0, 0, 1280, 720);
+	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 
 	// Game render loop
 	while (!glfwWindowShouldClose(window))
 	{
 		// input handling
-
+		processInput(window);
 		// rendering
 
 		// background color set & render
-		glClearColor(0.5f, 0.2f, 0.9f, 1.0);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(simpleProgramID);
-
 		glBindVertexArray(triangleVAO);
-		glDrawArrays(GL_TRIANGLES, 0, triangleSize);
+		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 
@@ -64,7 +68,7 @@ int init(GLFWwindow* &window)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
 	// Create Window
-	window = glfwCreateWindow(1280, 720, "Orange", nullptr, nullptr);
+	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Orange", nullptr, nullptr);
 
 	if (window == nullptr)
 	{
@@ -86,26 +90,57 @@ int init(GLFWwindow* &window)
 	return 0;
 }
 
-void createTriangle(GLuint& vao, int& size)  //VAO = Vertex Array Object
+void processInput(GLFWwindow*& window)
 {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, true);
+	}
+}
+
+
+void createTriangle(GLuint& VAO, int& numVertices, int& numIndices)  //VAO = Vertex Array Object
+{
+	float quadPixelHeight = 100;
+	float quadPixelWidth = 100;
+	float quadNormalizedHeight = quadPixelHeight / (SCREEN_HEIGHT / 2.0f);
+	float quadNormalizedWidth = quadPixelWidth / (SCREEN_WIDTH / 2.0f);
+
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.5f,
-		0.0f, 0.5f, 0.0f
+		// position												// color
+		-quadNormalizedWidth, quadNormalizedHeight, 0.0f, 		1.0f, 0.0f, 0.0f, 1.0f, // Top Left
+		quadNormalizedWidth, quadNormalizedHeight, 0.0f,		0.0f, 1.0f, 0.0f, 1.0f, // Top Right
+		quadNormalizedWidth, -quadNormalizedHeight, 0.0f,		0.0f, 0.0f, 1.0, 1.0f, // Bottom Right
+		-quadNormalizedWidth, -quadNormalizedHeight, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f, // Bottom Left
 	};
 
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	int indices[] = {
+		0, 1, 2,  // first triangle
+		0, 2, 3   // second triangle
+	};
 
-	GLuint VBO; // Vertex Buffer Object
+	int stride = (3 + 4) * sizeof(float);
+	numVertices = sizeof(vertices) / stride;
+	numIndices = sizeof(indices) / sizeof(int);
+
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	GLuint VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	GLuint EBO;
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
 	glEnableVertexAttribArray(0);
 
-	size = sizeof(vertices);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 }
 
 void createShaders()
