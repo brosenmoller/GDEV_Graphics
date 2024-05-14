@@ -10,6 +10,8 @@ uniform mat4 projection;
 
 out vec3 vertexColor;
 out vec2 uv;
+out vec3 normal;
+out vec3 worldPosition;
 
 void main()
 {
@@ -17,4 +19,7 @@ void main()
 
 	vertexColor = vColor;
 	uv = vUv;
+
+	normal = mat3(transform) * vNormal;
+	worldPosition = mat3(transform) * vPos;
 }

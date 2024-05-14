@@ -53,6 +53,8 @@ int main()
 
 	glm::mat4 projection = glm::perspective(45.0f, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
+	glm::vec3 lightPosition = glm::vec3(3, 6, 1);
+
 	// Game render loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -69,6 +71,8 @@ int main()
 		glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "transform"), 1, GL_FALSE, glm::value_ptr(world));
 		glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+		glUniform3fv(glGetUniformLocation(simpleProgramID, "lightPosition"), 1, glm::value_ptr(lightPosition));
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, boxTexture);
