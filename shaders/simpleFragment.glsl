@@ -35,13 +35,6 @@ void main()
 	float phongSpecular = pow(max(dot(reflectedLight, normalize(viewDirection)), 1.0), 128); // higher power = smaller highlight
 
 	// Lighting
-//	float lightValue = max(dot(normalMapNormal, lightDirection), 0.0); // Simple Lighting
-//	vec3 ambientLight = ambientLightColor * ambientLightIntensity; // Ambient
-//	vec3 light = min(ambientLight, 1.0); 
-//
-//	vec4 colorOutput = vec4(vertexColor, 1.0) * texture(mainTex, uv);
-//	colorOutput.rgb = colorOutput.rgb * lightValue + phongSpecular * colorOutput.rgb;
-
 	float lightValue = max(dot(normalMapNormal, lightDirection), 0.0); // Simple Diffuse Lighting
 	vec3 ambientLight = ambientLightColor * ambientLightIntensity; // Ambient
 
