@@ -49,17 +49,18 @@ int main()
 	// Create Viewport
 	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+	glm::vec3 lightPosition = glm::vec3(0, 2.5f, 5.0);
+	glm::vec3 cameraPosition = glm::vec3(0, 2.5f, -5.0f);
+
 	// Matrices
 	glm::mat4 world = glm::mat4(1.0f);
 	world = glm::rotate(world, glm::radians(45.0f), glm::vec3(0, 1, 0));
 	world = glm::scale(world, glm::vec3(1, 1, 1));
 	world = glm::translate(world, glm::vec3(0, 0, 0));
 
-	glm::mat4 view = glm::lookAt(glm::vec3(0, 2.5f, -5), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-
+	glm::mat4 view = glm::lookAt(cameraPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	glm::mat4 projection = glm::perspective(glm::radians(15.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
-	glm::vec3 lightPosition = glm::vec3(3, 6, 1);
 
 	// Game render loop
 	while (!glfwWindowShouldClose(window))
@@ -79,6 +80,7 @@ int main()
 		glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 		glUniform3fv(glGetUniformLocation(simpleProgramID, "lightPosition"), 1, glm::value_ptr(lightPosition));
+		glUniform3fv(glGetUniformLocation(simpleProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, boxTexture);
