@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <thread>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -24,6 +26,14 @@ GLuint simpleProgramID;
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
+
+
+clock_t frameTime = 0;
+unsigned int frames = 0;
+double frameRate = 120;
+double wantedFrameTime = 1 / frameRate;
+double deltaTime = wantedFrameTime;
+double programTime = 0;
 
 int main()
 {
@@ -65,6 +75,8 @@ int main()
 	// Game render loop
 	while (!glfwWindowShouldClose(window))
 	{
+		clock_t beginFrame = clock();
+
 		// input handling
 		processInput(window);
 		// rendering
@@ -82,6 +94,8 @@ int main()
 		glUniform3fv(glGetUniformLocation(simpleProgramID, "lightPosition"), 1, glm::value_ptr(lightPosition));
 		glUniform3fv(glGetUniformLocation(simpleProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
 
+		glUniform1f(glGetUniformLocation(simpleProgramID, "time"), (float)programTime);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, boxTexture);
 		glActiveTexture(GL_TEXTURE1);
@@ -94,6 +108,18 @@ int main()
 
 		// event polls
 		glfwPollEvents();
+
+		// Update Frame Counter
+		clock_t endFrame = clock();
+
+		frameTime = endFrame - beginFrame;
+		deltaTime = (frameTime / (double)CLOCKS_PER_SEC);
+
+		int milliesecondWaitTime = (int)((wantedFrameTime - deltaTime) * 1000.0f);
+		std::this_thread::sleep_for(std::chrono::milliseconds(milliesecondWaitTime));
+
+		programTime += wantedFrameTime;
+		frames++;
 	}
 
 	// terminate

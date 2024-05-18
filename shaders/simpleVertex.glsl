@@ -9,6 +9,7 @@ layout(location = 5) in vec3 vBitangent;
 uniform mat4 transform;
 uniform mat4 view;
 uniform mat4 projection;
+uniform float time;
 
 out vec3 vertexColor;
 out vec2 uv;
@@ -18,7 +19,14 @@ out vec3 worldPosition;
 
 void main()
 {
-	gl_Position = projection * view * transform * vec4(vPos, 1.0);
+	worldPosition = mat3(transform) * vPos;
+
+	// Vertex Animation Wobble
+	worldPosition.x += sin(10 * time + worldPosition.y) * 0.05;
+	worldPosition.z += sin(10 * time + worldPosition.y) * 0.05;
+	worldPosition.y += sin(10 * time + worldPosition.x) * 0.05;
+	
+	gl_Position = projection * view * vec4(worldPosition, 1.0);
 
 	vertexColor = vColor;
 	uv = vUv;
@@ -28,5 +36,4 @@ void main()
 	vec3 b = normalize(mat3(transform) * vBitangent);
 	TBN = mat3(t, b, normal);
 
-	worldPosition = mat3(transform) * vPos;
 }
