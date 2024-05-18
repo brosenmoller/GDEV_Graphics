@@ -12,6 +12,9 @@ uniform sampler2D normalTex;
 uniform vec3 lightPosition;
 uniform vec3 cameraPosition;
 
+uniform vec3 ambientLightColor;
+uniform float ambientLightIntensity;
+
 void main()
 {
 	vec3 lightDirection = normalize(lightPosition - worldPosition);
@@ -29,14 +32,22 @@ void main()
 	// Specular Data
 	vec3 viewDirection = normalize(worldPosition - cameraPosition);
 	vec3 reflectedLight = normalize(reflect(lightDirection, normalMapNormal));
-	float phongSpecular = pow(max(dot(reflectedLight, normalize(viewDirection)), 0.0), 256); // higher power = smaller highlight
+	float phongSpecular = pow(max(dot(reflectedLight, normalize(viewDirection)), 1.0), 256); // higher power = smaller highlight
 
 	// Lighting
-	float lightValue = max(dot(normalMapNormal, lightDirection), 0.0); // Simple Lighting
-	lightValue = min(lightValue + 0.1, 1.0); // Ambient
+//	float lightValue = max(dot(normalMapNormal, lightDirection), 0.0); // Simple Lighting
+//	vec3 ambientLight = ambientLightColor * ambientLightIntensity; // Ambient
+//	vec3 light = min(ambientLight, 1.0); 
+//
+//	vec4 colorOutput = vec4(vertexColor, 1.0) * texture(mainTex, uv);
+//	colorOutput.rgb = colorOutput.rgb * lightValue + phongSpecular * colorOutput.rgb;
+
+	float lightValue = max(dot(normalMapNormal, lightDirection), 0.0); // Simple Diffuse Lighting
+	vec3 ambientLight = ambientLightColor * ambientLightIntensity; // Ambient
 
 	vec4 colorOutput = vec4(vertexColor, 1.0) * texture(mainTex, uv);
-	colorOutput.rgb = colorOutput.rgb * lightValue + phongSpecular * colorOutput.rgb;
+	colorOutput.rgb = colorOutput.rgb * lightValue + ambientLight + phongSpecular * 0.1;
 
+	// Output the final color
 	FragColor = colorOutput;
 }

@@ -27,7 +27,6 @@ GLuint simpleProgramID;
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 
-
 clock_t frameTime = 0;
 unsigned int frames = 0;
 double frameRate = 120;
@@ -59,7 +58,7 @@ int main()
 	// Create Viewport
 	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-	glm::vec3 lightPosition = glm::vec3(0, 2.5f, 5.0);
+	glm::vec3 lightPosition = glm::vec3(1.0f, 2.5f, -1.0f);
 	glm::vec3 cameraPosition = glm::vec3(0, 2.5f, -5.0f);
 
 	// Matrices
@@ -69,7 +68,7 @@ int main()
 	world = glm::translate(world, glm::vec3(0, 0, 0));
 
 	glm::mat4 view = glm::lookAt(cameraPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	glm::mat4 projection = glm::perspective(glm::radians(15.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(25.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
 
 	// Game render loop
@@ -95,6 +94,9 @@ int main()
 		glUniform3fv(glGetUniformLocation(simpleProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
 
 		glUniform1f(glGetUniformLocation(simpleProgramID, "time"), (float)programTime);
+
+		glUniform3fv(glGetUniformLocation(simpleProgramID, "ambientLightColor"), 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.0f)));
+		glUniform1f(glGetUniformLocation(simpleProgramID, "ambientLightIntensity"), (float)0.1f);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, boxTexture);
