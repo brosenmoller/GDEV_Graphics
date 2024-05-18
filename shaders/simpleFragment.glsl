@@ -32,7 +32,7 @@ void main()
 	// Specular Data
 	vec3 viewDirection = normalize(worldPosition - cameraPosition);
 	vec3 reflectedLight = normalize(reflect(lightDirection, normalMapNormal));
-	float phongSpecular = pow(max(dot(reflectedLight, normalize(viewDirection)), 1.0), 256); // higher power = smaller highlight
+	float phongSpecular = pow(max(dot(reflectedLight, normalize(viewDirection)), 1.0), 128); // higher power = smaller highlight
 
 	// Lighting
 //	float lightValue = max(dot(normalMapNormal, lightDirection), 0.0); // Simple Lighting
