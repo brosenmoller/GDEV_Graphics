@@ -9,6 +9,6 @@ out vec3 worldPosition;
 
 void main()
 {
-	worldPosition = mat3(transform) * vPos;
+	worldPosition = vec3(transform * vec4(vPos, 1.0));
 	gl_Position = projection * view * vec4(worldPosition, 1.0);
 }

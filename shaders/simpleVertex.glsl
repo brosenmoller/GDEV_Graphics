@@ -19,7 +19,7 @@ out vec3 worldPosition;
 
 void main()
 {
-	worldPosition = mat3(transform) * vPos;
+	worldPosition = vec3(transform * vec4(vPos, 1.0));
 
 	// Vertex Animation Wobble
 	worldPosition.x += sin(10 * time + worldPosition.y) * 0.05;
