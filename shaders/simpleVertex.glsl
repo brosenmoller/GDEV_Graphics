@@ -35,5 +35,4 @@ void main()
 	vec3 t = normalize(mat3(transform) * vTangent);
 	vec3 b = normalize(mat3(transform) * vBitangent);
 	TBN = mat3(t, b, normal);
-
 }

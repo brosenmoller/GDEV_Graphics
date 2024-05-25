@@ -6,11 +6,13 @@
 #include <GLFW/glfw3.h>
 
 #define STB_IMAGE_IMPLEMENTATION
+#define GLM_ENABLE_EXPERIMENTAL
 #include "stb_image.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 int init(GLFWwindow* &window);
 void processInput(GLFWwindow*& window);
@@ -18,11 +20,16 @@ void createMesh(GLuint& VAO, int& numVertices, int& numIndices);
 void createShaders();
 void createProgram(GLuint& programID, const char* vertexShaderPath, const char* fragmentShaderPath);
 void loadFile(const char* filename, char*& output);
+void renderSkyBox();
+void renderCube();
+
+// Window Callbacks
+void cursorPosCallback(GLFWwindow* window, double xPos, double yPos);
 
 GLuint loadTexture(const char* path);
 
 // Program IDs
-GLuint simpleProgramID;
+GLuint simpleProgramID, skyProgramID;
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
@@ -34,6 +41,29 @@ double wantedFrameTime = 1 / frameRate;
 double deltaTime = wantedFrameTime;
 double programTime = 0;
 
+// World Data
+glm::mat4 view;
+glm::mat4 projection = glm::perspective(glm::radians(50.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+glm::vec3 pointLightPosition = glm::vec3(1.0f, 2.5f, -1.0f);
+glm::vec3 lightDirection = glm::normalize(glm::vec3(0.0f, -0.5f, -0.5f));
+
+// Cube Data
+GLuint boxTexture;
+GLuint boxNormalTex;
+
+GLuint boxTriangles;
+int boxNumVertices;
+int boxNumIndices;
+
+// Camera Data
+glm::vec3 cameraPosition = glm::vec3(0, 2.5f, -5.0f);
+glm::vec3 cameraForward = glm::vec3(0, 0, 1);
+glm::vec3 cameraUp = glm::vec3(0, 1, 0);
+
+float camLastX, camLastY;
+bool camIsFirstMove = true;
+float camYaw, camPitch;
+
 int main()
 {
 	GLFWwindow* window;
@@ -42,34 +72,18 @@ int main()
 
 	createShaders();
 
-	GLuint triangleVAO;
-	int numVertices;
-	int numIndices;
-	createMesh(triangleVAO, numVertices, numIndices);
-
-	GLuint boxTexture = loadTexture("assets/textures/container2.png");
-	GLuint boxNormalTex = loadTexture("assets/textures/container2_normalmap.png");
+	createMesh(boxTriangles, boxNumVertices, boxNumIndices);
 
 	// Set texture channels
+	boxTexture = loadTexture("assets/textures/container2.png");
+	boxNormalTex = loadTexture("assets/textures/container2_normalmap.png");
+
 	glUseProgram(simpleProgramID);
 	glUniform1i(glGetUniformLocation(simpleProgramID, "mainTex"), 0);
 	glUniform1i(glGetUniformLocation(simpleProgramID, "normalTex"), 1);
 
 	// Create Viewport
-	glViewport(0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	glm::vec3 lightPosition = glm::vec3(1.0f, 2.5f, -1.0f);
-	glm::vec3 cameraPosition = glm::vec3(0, 2.5f, -5.0f);
-
-	// Matrices
-	glm::mat4 world = glm::mat4(1.0f);
-	world = glm::rotate(world, glm::radians(45.0f), glm::vec3(0, 1, 0));
-	world = glm::scale(world, glm::vec3(1, 1, 1));
-	world = glm::translate(world, glm::vec3(0, 0, 0));
-
-	glm::mat4 view = glm::lookAt(cameraPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	glm::mat4 projection = glm::perspective(glm::radians(25.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
-
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	// Game render loop
 	while (!glfwWindowShouldClose(window))
@@ -78,33 +92,15 @@ int main()
 
 		// input handling
 		processInput(window);
-		// rendering
 
 		// background color set & render
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(simpleProgramID);
+		view = glm::lookAt(cameraPosition, cameraPosition + cameraForward, cameraUp);
 
-		glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "transform"), 1, GL_FALSE, glm::value_ptr(world));
-		glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-		glUniform3fv(glGetUniformLocation(simpleProgramID, "lightPosition"), 1, glm::value_ptr(lightPosition));
-		glUniform3fv(glGetUniformLocation(simpleProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
-
-		glUniform1f(glGetUniformLocation(simpleProgramID, "time"), (float)programTime);
-
-		glUniform3fv(glGetUniformLocation(simpleProgramID, "ambientLightColor"), 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.0f)));
-		glUniform1f(glGetUniformLocation(simpleProgramID, "ambientLightIntensity"), (float)0.1f);
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, boxTexture);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, boxNormalTex);
-
-		glBindVertexArray(triangleVAO);
-		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
+		renderSkyBox();
+		//renderCube();
 
 		glfwSwapBuffers(window);
 
@@ -128,6 +124,62 @@ int main()
 	return 0;
 }
 
+void renderSkyBox()
+{
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, cameraPosition);
+	transform = glm::scale(transform, glm::vec3(10.0f, 10.0f, 10.0f));
+	
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
+
+	glUseProgram(skyProgramID);
+
+	glUniformMatrix4fv(glGetUniformLocation(skyProgramID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(glGetUniformLocation(skyProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(skyProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+	glUniform3fv(glGetUniformLocation(skyProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
+	glUniform3fv(glGetUniformLocation(skyProgramID, "lightDirection"), 1, glm::value_ptr(lightDirection));
+
+	glBindVertexArray(boxTriangles);
+	glDrawElements(GL_TRIANGLES, boxNumIndices, GL_UNSIGNED_INT, 0);
+
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void renderCube()
+{
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(0, 1, 0));
+	transform = glm::scale(transform, glm::vec3(1, 1, 1));
+	transform = glm::translate(transform, glm::vec3(0, 0, 0));
+
+	glUseProgram(simpleProgramID);
+
+	glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(simpleProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+	glUniform3fv(glGetUniformLocation(simpleProgramID, "lightPosition"), 1, glm::value_ptr(pointLightPosition));
+	glUniform3fv(glGetUniformLocation(simpleProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
+
+	glUniform1f(glGetUniformLocation(simpleProgramID, "time"), (float)programTime);
+
+	glUniform3fv(glGetUniformLocation(simpleProgramID, "ambientLightColor"), 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.0f)));
+	glUniform1f(glGetUniformLocation(simpleProgramID, "ambientLightIntensity"), (float)0.1f);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, boxTexture);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, boxNormalTex);
+
+	glBindVertexArray(boxTriangles);
+	glDrawElements(GL_TRIANGLES, boxNumIndices, GL_UNSIGNED_INT, 0);
+}
+
+
 int init(GLFWwindow* &window)
 {
 	glfwInit();
@@ -139,12 +191,14 @@ int init(GLFWwindow* &window)
 
 	// Create Window
 	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Orange", nullptr, nullptr);
-
 	if (window == nullptr)
 	{
 		std::cout << "Failed to Create window" << std::endl;
 		return -1;
 	}
+
+	// Register callbacks
+	glfwSetCursorPosCallback(window, cursorPosCallback);
 
 	// Set content
 	glfwMakeContextCurrent(window);
@@ -158,6 +212,38 @@ int init(GLFWwindow* &window)
 	}
 
 	return 0;
+}
+
+void cursorPosCallback(GLFWwindow* window, double xPos, double yPos)
+{
+	float x = (float)xPos;
+	float y = (float)yPos;
+
+	if (camIsFirstMove)
+	{
+		camLastX = x;
+		camLastY = y;
+		camIsFirstMove = false;
+	}
+
+	float deltaX = x - camLastX;
+	float deltaY = y - camLastY;
+
+	camLastX = x;
+	camLastY = y;
+
+	camYaw += deltaX;
+	camPitch -= deltaY;
+
+	camPitch = glm::clamp(camPitch, -85.0f, 85.0f);
+
+	if (camYaw > 180.0f) { camYaw -= 360.0f; }
+	if (camYaw < -180.0f) { camYaw += 360.0f; }
+
+	glm::quat camQuat = glm::quat(glm::vec3(glm::radians(camPitch), glm::radians(camYaw), 0.0f));
+
+	cameraForward = camQuat * glm::vec3(0, 0, 1);
+	cameraUp = camQuat * glm::vec3(0, 1, 0);
 }
 
 void processInput(GLFWwindow*& window)
@@ -270,6 +356,7 @@ void createMesh(GLuint& VAO, int& numVertices, int& numIndices)  //VAO = Vertex 
 void createShaders()
 {
 	createProgram(simpleProgramID, "shaders/simpleVertex.glsl", "shaders/simpleFragment.glsl");
+	createProgram(skyProgramID, "shaders/skyVertex.glsl", "shaders/skyFragment.glsl");
 }
 
 void createProgram(GLuint &programID, const char* vertexShaderPath, const char* fragmentShaderPath)
