@@ -145,6 +145,8 @@
     <None Include="shaders\simpleVertex.glsl" />
     <None Include="shaders\skyFragment.glsl" />
     <None Include="shaders\skyVertex.glsl" />
+    <None Include="shaders\terrainFragment.glsl" />
+    <None Include="shaders\terrainVertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

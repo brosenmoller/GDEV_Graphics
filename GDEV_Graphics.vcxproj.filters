@@ -27,5 +27,7 @@
     <None Include="shaders\simpleFragment.glsl" />
     <None Include="shaders\skyFragment.glsl" />
     <None Include="shaders\skyVertex.glsl" />
+    <None Include="shaders\terrainFragment.glsl" />
+    <None Include="shaders\terrainVertex.glsl" />
   </ItemGroup>
 </Project>
