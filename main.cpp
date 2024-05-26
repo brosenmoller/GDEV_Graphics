@@ -143,21 +143,23 @@ void renderSkyBox()
 	
 	glDisable(GL_CULL_FACE);
 	glDisable(GL_DEPTH);
+	glDisable(GL_DEPTH_TEST);
 
 	glUseProgram(skyProgramID);
 
-	glUniformMatrix4fv(glGetUniformLocation(skyProgramID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
-	glUniformMatrix4fv(glGetUniformLocation(skyProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(skyProgramID, "transform"),  1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(glGetUniformLocation(skyProgramID, "view"),       1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(skyProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-	glUniform3fv(glGetUniformLocation(skyProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
-	glUniform3fv(glGetUniformLocation(skyProgramID, "lightDirection"), 1, glm::value_ptr(lightDirection));
+	glUniform3fv(glGetUniformLocation(skyProgramID, "cameraPosition"),   1, glm::value_ptr(cameraPosition));
+	glUniform3fv(glGetUniformLocation(skyProgramID, "lightDirection"),   1, glm::value_ptr(lightDirection));
 
 	glBindVertexArray(boxVAO);
 	glDrawElements(GL_TRIANGLES, boxNumIndices, GL_UNSIGNED_INT, 0);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void renderTerrain()
@@ -165,6 +167,7 @@ void renderTerrain()
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glEnable(GL_DEPTH);
+	glEnable(GL_DEPTH_TEST);
 
 	glUseProgram(terrainProgramID);
 
@@ -223,8 +226,6 @@ int init(GLFWwindow* &window)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
 	// Create Window
 	window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Orange", nullptr, nullptr);
