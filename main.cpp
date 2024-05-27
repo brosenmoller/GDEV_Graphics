@@ -239,6 +239,8 @@ int init(GLFWwindow* &window)
 	glfwSetCursorPosCallback(window, cursorPosCallback);
 	glfwSetKeyCallback(window, keyCallBack);
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	// Set content
 	glfwMakeContextCurrent(window);
 
@@ -271,8 +273,8 @@ void cursorPosCallback(GLFWwindow* window, double xPos, double yPos)
 	camLastX = x;
 	camLastY = y;
 
-	camYaw -= deltaX;
-	camPitch += deltaY;
+	camYaw -= deltaX * 0.5f;
+	camPitch += deltaY * 0.2f;
 
 	camPitch = glm::clamp(camPitch, -85.0f, 85.0f);
 
@@ -304,7 +306,16 @@ void processInput(GLFWwindow*& window)
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	float speed = 10.0f;
+	float speed;
+	if (keys[GLFW_KEY_LEFT_SHIFT])
+	{
+		speed = 50.0f;
+	}
+	else
+	{
+		speed = 10.0f;
+	}
+
 	if (keys[GLFW_KEY_W])
 	{
 		cameraPosition += camQuat * glm::vec3(0, 0, 1 * speed);
