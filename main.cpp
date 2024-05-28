@@ -21,6 +21,7 @@ void createCubeMesh(GLuint& VAO, int& numVertices, int& numIndices);
 void createShaders();
 void createProgram(GLuint& programID, const char* vertexShaderPath, const char* fragmentShaderPath);
 void loadFile(const char* filename, char*& output);
+GLuint loadTexture(const char* path, int comp = 0);
 void renderSkyBox();
 void renderCube();
 void renderTerrain();
@@ -32,7 +33,6 @@ void keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods
 
 bool keys[1024];
 
-GLuint loadTexture(const char* path);
 
 // Program IDs
 GLuint simpleProgramID, skyProgramID, terrainProgramID;
@@ -65,6 +65,8 @@ int boxNumIndices;
 GLuint terrainVAO, terrainIndexCount, heightMapID, heightNormalId;
 unsigned char* terrainHeightMapData;
 
+GLuint dirt, sand, grass, rock, snow;
+
 // Camera Data
 glm::vec3 cameraPosition = glm::vec3(100.0f, 125.0f, 100.0f);
 glm::vec3 cameraForward = glm::vec3(0, 0, 1);
@@ -91,6 +93,12 @@ int main()
 	// Set texture channels
 	boxTexture = loadTexture("assets/textures/container2.png");
 	boxNormalTex = loadTexture("assets/textures/container2_normalmap.png");
+
+	dirt = loadTexture("assets/textures/dirt.jpg");
+	sand = loadTexture("assets/textures/sand.jpg");
+	grass = loadTexture("assets/textures/grass.png", 4);
+	rock = loadTexture("assets/textures/rock.jpg");
+	snow = loadTexture("assets/textures/snow.jpg");
 
 	// Create Viewport
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -187,6 +195,21 @@ void renderTerrain()
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, heightNormalId);
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, dirt);
+
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, sand);
+
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, grass);
+
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, rock);
+
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, snow);
 
 	glBindVertexArray(terrainVAO);
 	glDrawElements(GL_TRIANGLES, terrainIndexCount, GL_UNSIGNED_INT, 0);
@@ -569,6 +592,12 @@ void createShaders()
 	glUseProgram(terrainProgramID);
 	glUniform1i(glGetUniformLocation(terrainProgramID, "mainTex"), 0);
 	glUniform1i(glGetUniformLocation(terrainProgramID, "normalTex"), 1);
+
+	glUniform1i(glGetUniformLocation(terrainProgramID, "dirtTex"), 2);
+	glUniform1i(glGetUniformLocation(terrainProgramID, "sandTex"), 3);
+	glUniform1i(glGetUniformLocation(terrainProgramID, "grassTex"), 4);
+	glUniform1i(glGetUniformLocation(terrainProgramID, "rockTex"), 5);
+	glUniform1i(glGetUniformLocation(terrainProgramID, "snowTex"), 6);
 }
 
 void createProgram(GLuint &programID, const char* vertexShaderPath, const char* fragmentShaderPath)
@@ -650,7 +679,7 @@ void loadFile(const char* filename, char*& output)
 	}
 }
 
-GLuint loadTexture(const char* path)
+GLuint loadTexture(const char* path, int comp)
 {
 	GLuint textureID;
 	glGenTextures(1, &textureID);
@@ -660,10 +689,12 @@ GLuint loadTexture(const char* path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	int width, height, numChannels;
-	unsigned char* data = stbi_load(path, &width, &height, &numChannels, 0);
+	unsigned char* data = stbi_load(path, &width, &height, &numChannels, comp);
 
 	if (data)
 	{
+		if (comp != 0) { numChannels = comp; }
+
 		if (numChannels == 3)
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
