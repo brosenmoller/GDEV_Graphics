@@ -2,6 +2,7 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -23,7 +24,7 @@ void loadFile(const char* filename, char*& output);
 void renderSkyBox();
 void renderCube();
 void renderTerrain();
-GLuint GeneratePlane(const char* heightmap, GLenum format, int comp, float hScale, float xzScale, unsigned int& indexCount, unsigned int& heightmapID);
+GLuint GeneratePlane(const char* heightmap, unsigned char*& data, GLenum format, int comp, float hScale, float xzScale, unsigned int& indexCount, unsigned int& heightmapID);
 
 // Window Callbacks
 void cursorPosCallback(GLFWwindow* window, double xPos, double yPos);
@@ -61,7 +62,8 @@ int boxNumVertices;
 int boxNumIndices;
 
 // Terrain Data
-GLuint terrainVAO, terrainIndexCount, heightMapID;
+GLuint terrainVAO, terrainIndexCount, heightMapID, heightNormalId;
+unsigned char* terrainHeightMapData;
 
 // Camera Data
 glm::vec3 cameraPosition = glm::vec3(100.0f, 125.0f, 100.0f);
@@ -82,15 +84,13 @@ int main()
 	createShaders();
 
 	createCubeMesh(boxVAO, boxNumVertices, boxNumIndices);
-	terrainVAO = GeneratePlane("assets/textures/Heightmap2.png", GL_RGBA, 4, 100.0f, 5.0f, terrainIndexCount, heightMapID);
+
+	terrainVAO = GeneratePlane("assets/textures/Heightmap2.png", terrainHeightMapData, GL_RGBA, 4, 100.0f, 5.0f, terrainIndexCount, heightMapID);
+	heightNormalId = loadTexture("assets/textures/heightmapNormal.png");
 
 	// Set texture channels
 	boxTexture = loadTexture("assets/textures/container2.png");
 	boxNormalTex = loadTexture("assets/textures/container2_normalmap.png");
-
-	glUseProgram(simpleProgramID);
-	glUniform1i(glGetUniformLocation(simpleProgramID, "mainTex"), 0);
-	glUniform1i(glGetUniformLocation(simpleProgramID, "normalTex"), 1);
 
 	// Create Viewport
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -177,11 +177,16 @@ void renderTerrain()
 	glUniformMatrix4fv(glGetUniformLocation(terrainProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(glGetUniformLocation(terrainProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
+	//float t = glfwGetTime();
+	lightDirection = glm::normalize(glm::vec3(glm::sin(programTime), -0.5f, glm::cos(programTime)));
 	glUniform3fv(glGetUniformLocation(terrainProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
 	glUniform3fv(glGetUniformLocation(terrainProgramID, "lightDirection"), 1, glm::value_ptr(lightDirection));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, heightMapID);
+
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, heightNormalId);
 
 	glBindVertexArray(terrainVAO);
 	glDrawElements(GL_TRIANGLES, terrainIndexCount, GL_UNSIGNED_INT, 0);
@@ -334,10 +339,10 @@ void processInput(GLFWwindow*& window)
 	}
 }
 
-GLuint GeneratePlane(const char* heightmap, GLenum format, int comp, float hScale, float xzScale, unsigned int& indexCount, unsigned int& heightmapID)
+GLuint GeneratePlane(const char* heightmap, unsigned char* &data, GLenum format, int comp, float hScale, float xzScale, unsigned int& indexCount, unsigned int& heightmapID)
 {
 	int width, height, channels;
-	unsigned char* data = nullptr;
+	data = nullptr;
 	if (heightmap != nullptr)
 	{
 		data = stbi_load(heightmap, &width, &height, &channels, comp);
@@ -353,6 +358,16 @@ GLuint GeneratePlane(const char* heightmap, GLenum format, int comp, float hScal
 			glGenerateMipmap(GL_TEXTURE_2D);
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
+		else
+		{
+			std::cout << "Error Loading Heightmap Data" << std::endl;
+			return -1;
+		}
+	}
+	else
+	{
+		std::cout << "Error Loading Heightmap Data" << std::endl;
+		return -1;
 	}
 
 	int stride = 8;
@@ -366,9 +381,11 @@ GLuint GeneratePlane(const char* heightmap, GLenum format, int comp, float hScal
 		int x = i % width;
 		int z = i / width;
 
+		float texheight = (float)data[i * comp];
+
 		// TODO: set position
 		vertices[index++] = x * xzScale;
-		vertices[index++] = 0;
+		vertices[index++] = (texheight / 255.0f) * hScale;
 		vertices[index++] = z * xzScale;
 
 		// TODO: set normal
@@ -434,7 +451,7 @@ GLuint GeneratePlane(const char* heightmap, GLenum format, int comp, float hScal
 	delete[] vertices;
 	delete[] indices;
 
-	stbi_image_free(data);
+	//stbi_image_free(data);
 
 	return VAO;
 }
@@ -541,8 +558,17 @@ void createCubeMesh(GLuint& VAO, int& numVertices, int& numIndices)  //VAO = Ver
 void createShaders()
 {
 	createProgram(simpleProgramID, "shaders/simpleVertex.glsl", "shaders/simpleFragment.glsl");
+
+	glUseProgram(simpleProgramID);
+	glUniform1i(glGetUniformLocation(simpleProgramID, "mainTex"), 0); 
+	glUniform1i(glGetUniformLocation(simpleProgramID, "normalTex"), 1);
+
 	createProgram(skyProgramID, "shaders/skyVertex.glsl", "shaders/skyFragment.glsl");
 	createProgram(terrainProgramID, "shaders/terrainVertex.glsl", "shaders/terrainFragment.glsl");
+
+	glUseProgram(terrainProgramID);
+	glUniform1i(glGetUniformLocation(terrainProgramID, "mainTex"), 0);
+	glUniform1i(glGetUniformLocation(terrainProgramID, "normalTex"), 1);
 }
 
 void createProgram(GLuint &programID, const char* vertexShaderPath, const char* fragmentShaderPath)
