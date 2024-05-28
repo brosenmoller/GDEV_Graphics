@@ -16,6 +16,11 @@ uniform sampler2D sandTex;
 uniform vec3 lightDirection;
 uniform vec3 cameraPosition;
 
+vec3 lerp(vec3 a, vec3 b, float t)
+{
+	return a + (b - a) * t;
+}
+
 vec4 lerp(vec4 a, vec4 b, float t)
 {
 	return a + (b - a) * t;
@@ -48,21 +53,48 @@ void main()
 	normalMapNormal.gb = normalMapNormal.bg;
 	normalMapNormal.g = -normalMapNormal.g;
 
-	// Specular Data
-//	vec3 viewDirection = normalize(worldPosition - cameraPosition);
-//	vec3 reflectedLight = normalize(reflect(lightDirection, normalMapNormal));
-//	float phongSpecular = pow(max(dot(reflectedLight, normalize(viewDirection)), 1.0), 128); // higher power = smaller highlight
-
-
 	// Lighting
 	float lightValue = min(max(dot(normalMapNormal, lightDirection), 0.0) + 0.1, 1.0); // Simple Diffuse Lighting
-	//vec3 ambientLight = ambientLightColor * ambientLightIntensity; // Ambient
 
-//	vec4 colorOutput = texture(dirtTex, uv);
+    // Terrain Color
+    float y = worldPosition.y;
+    float dirtToSand = clamp((y - 50) / 10, -1, 1) * .5 + .5;
+    float sandToGrass = clamp((y - 100) / 10, -1, 1) * .5 + .5;
+    float grassToRock = clamp((y - 150) / 10, -1, 1) * .5 + .5;
+    float rockToSnow = clamp((y - 200) / 10, -1, 1) * .5 + .5;
 
-    vec4 colorOutput = chooseCorrectColor(worldPosition.y, 10, 20, 30, 40, texture(sandTex, uv), texture(grassTex, uv), texture(snowTex, uv));
+    float dist = distance(worldPosition, cameraPosition);
 
+    float uvScale = 10;
+    vec3 dirtColor = texture(dirtTex, uv * uvScale).rgb;
+    vec3 sandColor = texture(sandTex, uv * uvScale).rgb;
+    vec3 grassColor = texture(grassTex, uv * uvScale).rgb;
+    vec3 rockColor = texture(rockTex, uv * uvScale).rgb;
+    vec3 snowColor = texture(snowTex, uv * uvScale).rgb;
+
+    vec3 diffuse = lerp(dirtColor, sandColor, dirtToSand);
+    diffuse = lerp(diffuse, grassColor, sandToGrass);
+    diffuse = lerp(diffuse, rockColor, grassToRock);
+    diffuse = lerp(diffuse, snowColor, rockToSnow);
+
+
+    // Construct Color
+    vec4 colorOutput = vec4(diffuse, 1.0);// chooseCorrectColor(worldPosition.y, 0, 50, 30, 30, texture(sandTex, uv), texture(grassTex, uv), texture(snowTex, uv));
 	colorOutput.rgb = colorOutput.rgb * lightValue;
+
+    vec3 topColor = vec3(68.0, 118.0, 189.0) / 255.0;
+	vec3 middleColor = vec3(188.0, 214.0, 231.0) / 255.0;
+	vec3 bottomColor = vec3(20.0, 20.0, 21.0) / 255.0;
+
+    vec3 viewDirection = normalize(worldPosition - cameraPosition);
+
+    float blendFactor = smoothstep(-0.001, 0.001, viewDirection.y); // Smooth transition at y=0
+	vec3 selectedColor = mix(bottomColor, topColor, blendFactor); // Mix based on blendFactor
+
+	vec3 fogColor = lerp(middleColor, selectedColor, pow(abs(viewDirection.y), 0.7));
+
+    float fog = pow(clamp((dist - 1500) / 1000, 0, 1), 1.5);
+    colorOutput.rgb = lerp(colorOutput.rgb, fogColor, fog);
 
 	// Output the final color
 	FragColor = colorOutput;
