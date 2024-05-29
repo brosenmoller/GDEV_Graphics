@@ -186,7 +186,7 @@ void renderTerrain()
 	glUniformMatrix4fv(glGetUniformLocation(terrainProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 	//float t = glfwGetTime();
-	lightDirection = glm::normalize(glm::vec3(glm::sin(programTime), -0.5f, glm::cos(programTime)));
+	//lightDirection = glm::normalize(glm::vec3(glm::sin(programTime), -0.5f, glm::cos(programTime)));
 	glUniform3fv(glGetUniformLocation(terrainProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
 	glUniform3fv(glGetUniformLocation(terrainProgramID, "lightDirection"), 1, glm::value_ptr(lightDirection));
 
