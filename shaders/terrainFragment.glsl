@@ -62,31 +62,6 @@ vec3 lerp(vec3 a, vec3 b, float t)
 	return a + (b - a) * t;
 }
 
-vec4 lerp(vec4 a, vec4 b, float t)
-{
-	return a + (b - a) * t;
-}
-
-vec4 chooseCorrectColor(float height, float heightCutoff1, float heightCutoff2, 
-                              float heightBlendCutoff1, float heightBlendCutoff2,
-                              vec4 color0, vec4 color1, vec4 color2)
-{
-    float t0 = step(heightCutoff1 - heightBlendCutoff1, height);
-    float t1 = step(heightCutoff1 + heightBlendCutoff1, height);
-    float t2 = step(heightCutoff2 - heightBlendCutoff2, height);
-    float t3 = step(heightCutoff2 + heightBlendCutoff2, height);
-
-    vec4 colorBlend0_1 = lerp(color0, color1, clamp((height - (heightCutoff1 - heightBlendCutoff1)) / (2.0 * heightBlendCutoff1), 0.0, 1.0));
-    vec4 colorBlend1_2 = lerp(color1, color2, clamp((height - (heightCutoff2 - heightBlendCutoff2)) / (2.0 * heightBlendCutoff2), 0.0, 1.0));
-
-    vec4 finalColor = mix(color0, colorBlend0_1, t0 * (1.0 - t1));
-    finalColor = mix(finalColor, color1, t1 * (1.0 - t2));
-    finalColor = mix(finalColor, colorBlend1_2, t2 * (1.0 - t3));
-    finalColor = mix(finalColor, color2, t3);
-
-    return finalColor;
-}
-
 float getGradientHeight(float blendNoiseScale, float blendNoiseMultiplier)
 {
     vec2 xz = worldPosition.xz;
@@ -124,8 +99,6 @@ void main()
     float y = getGradientHeight(.003, -20);
     float dirtToSand = clamp((y - 50) / 10, -1, 1) * .5 + .5;
     float sandToGrass = clamp((y - 100) / 10, -1, 1) * .5 + .5;
-    //float grassToRock = clamp((y - 150) / 10, -1, 1) * .5 + .5;
-    //float rockToSnow = clamp((y - 200) / 10, -1, 1) * .5 + .5;
     float grassToSnow = clamp((y - 200) / 10, -1, 1) * .5 + .5;
 
     float dist = distance(worldPosition, cameraPosition);
@@ -139,15 +112,13 @@ void main()
 
     vec3 diffuse = lerp(dirtColor, sandColor, dirtToSand);
     diffuse = lerp(diffuse, grassColor, sandToGrass);
-    //diffuse = lerp(diffuse, rockColor, grassToRock);
-    //diffuse = lerp(diffuse, snowColor, rockToSnow);
     diffuse = lerp(diffuse, snowColor, grassToSnow);
 
     diffuse = colorFromNormalWithLerp(normalMapNormal, 0.4, diffuse, rockColor, 60, 4);
 
 
     // Construct Color
-    vec4 colorOutput = vec4(diffuse, 1.0);// chooseCorrectColor(worldPosition.y, 0, 50, 30, 30, texture(sandTex, uv), texture(grassTex, uv), texture(snowTex, uv));
+    vec4 colorOutput = vec4(diffuse, 1.0);
 	colorOutput.rgb = colorOutput.rgb * lightValue;
 
     vec3 topColor = vec3(68.0, 118.0, 189.0) / 255.0;
