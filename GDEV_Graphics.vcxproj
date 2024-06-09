@@ -141,8 +141,6 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assimp-vc143-mt.dll" />
-    <None Include="pugixml.dll" />
     <None Include="shaders\modelFragment.glsl" />
     <None Include="shaders\modelVertex.glsl" />
     <None Include="shaders\simpleFragment.glsl" />
@@ -151,7 +149,6 @@
     <None Include="shaders\skyVertex.glsl" />
     <None Include="shaders\terrainFragment.glsl" />
     <None Include="shaders\terrainVertex.glsl" />
-    <None Include="zlib1.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mesh.h" />

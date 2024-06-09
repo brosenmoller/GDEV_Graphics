@@ -31,9 +31,6 @@
     <None Include="shaders\terrainVertex.glsl" />
     <None Include="shaders\modelFragment.glsl" />
     <None Include="shaders\modelVertex.glsl" />
-    <None Include="zlib1.dll" />
-    <None Include="pugixml.dll" />
-    <None Include="assimp-vc143-mt.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mesh.h">

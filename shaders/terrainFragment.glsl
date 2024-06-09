@@ -133,6 +133,7 @@ void main()
 	vec3 fogColor = lerp(middleColor, selectedColor, pow(abs(viewDirection.y), 0.7));
 
     float fog = pow(clamp((dist - 2500) / 1000, 0, 1), 1.5);
+
     colorOutput.rgb = lerp(colorOutput.rgb, fogColor, fog);
 
 	// Output the final color

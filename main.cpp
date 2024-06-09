@@ -110,6 +110,7 @@ int main()
 
 	backPackModel = new Model("assets/models/backpack/backpack.obj");
 
+
 	// Create Viewport
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -131,7 +132,7 @@ int main()
 		renderSkyBox();
 		renderTerrain();
 
-		renderModel(backPackModel, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(10, 10, 10));
+		renderModel(backPackModel, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(100, 100, 100));
 		//renderCube();
 
 		glfwSwapBuffers(window);
@@ -158,17 +159,17 @@ int main()
 
 void renderModel(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
+	glEnable(GL_BLEND);
+
+	// Alpha Blending
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_DEPTH);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
 	glUseProgram(modelProgramID);
-
-	//glm::mat4 transform = glm::mat4(1.0f);
-	//transform = glm::rotate(transform, glm::radians(0.0f), glm::vec3(0, 1, 0));
-	//transform = glm::scale(transform, glm::vec3(10, 10, 10));
-	//transform = glm::translate(transform, glm::vec3(0, 0, 0));
 
 	glm::mat4 transform = glm::mat4(1.0f);
 	transform = glm::translate(transform, position);
@@ -181,8 +182,10 @@ void renderModel(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3
 
 	glUniform3fv(glGetUniformLocation(modelProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
 	glUniform3fv(glGetUniformLocation(modelProgramID, "lightDirection"), 1, glm::value_ptr(lightDirection));
-
+	
 	model->Draw(modelProgramID);
+
+	glDisable(GL_BLEND);
 }
 
 void renderSkyBox()
