@@ -6,14 +6,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#define GLM_ENABLE_EXPERIMENTAL
-#include "stb_image.h"
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
+
+#include "src/model.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 int init(GLFWwindow* &window);
 void processInput(GLFWwindow*& window);
@@ -25,7 +26,10 @@ GLuint loadTexture(const char* path, int comp = 0);
 void renderSkyBox();
 void renderCube();
 void renderTerrain();
+void renderModel(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+
 GLuint GeneratePlane(const char* heightmap, unsigned char*& data, GLenum format, int comp, float hScale, float xzScale, unsigned int& indexCount, unsigned int& heightmapID);
+
 
 // Window Callbacks
 void cursorPosCallback(GLFWwindow* window, double xPos, double yPos);
@@ -35,7 +39,7 @@ bool keys[1024];
 
 
 // Program IDs
-GLuint simpleProgramID, skyProgramID, terrainProgramID;
+GLuint simpleProgramID, skyProgramID, terrainProgramID, modelProgramID;
 
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
@@ -77,14 +81,18 @@ float camLastX, camLastY;
 bool camIsFirstMove = true;
 float camYaw, camPitch;
 
+// Backpack Data
+Model* backPackModel;
+
 int main()
 {
 	GLFWwindow* window;
 	int result = init(window);
 	if (result != 0) { return result; }
 
-	createShaders();
+	stbi_set_flip_vertically_on_load(true);
 
+	createShaders();
 	createCubeMesh(boxVAO, boxNumVertices, boxNumIndices);
 
 	terrainVAO = GeneratePlane("assets/textures/Heightmap2.png", terrainHeightMapData, GL_RGBA, 4, 100.0f, 5.0f, terrainIndexCount, heightMapID);
@@ -99,6 +107,8 @@ int main()
 	grass = loadTexture("assets/textures/grass.png", 4);
 	rock = loadTexture("assets/textures/rock.jpg");
 	snow = loadTexture("assets/textures/snow.jpg");
+
+	backPackModel = new Model("assets/models/backpack/backpack.obj");
 
 	// Create Viewport
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -117,8 +127,11 @@ int main()
 
 		view = glm::lookAt(cameraPosition, cameraPosition + cameraForward, cameraUp);
 
+
 		renderSkyBox();
 		renderTerrain();
+
+		renderModel(backPackModel, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(10, 10, 10));
 		//renderCube();
 
 		glfwSwapBuffers(window);
@@ -141,6 +154,35 @@ int main()
 
 	// terminate
 	return 0;
+}
+
+void renderModel(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+{
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
+	glUseProgram(modelProgramID);
+
+	//glm::mat4 transform = glm::mat4(1.0f);
+	//transform = glm::rotate(transform, glm::radians(0.0f), glm::vec3(0, 1, 0));
+	//transform = glm::scale(transform, glm::vec3(10, 10, 10));
+	//transform = glm::translate(transform, glm::vec3(0, 0, 0));
+
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, position);
+	transform = transform * glm::toMat4(glm::quat(glm::radians(rotation)));
+	transform = glm::scale(transform, scale);
+
+	glUniformMatrix4fv(glGetUniformLocation(modelProgramID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(glGetUniformLocation(modelProgramID, "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(modelProgramID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+	glUniform3fv(glGetUniformLocation(modelProgramID, "cameraPosition"), 1, glm::value_ptr(cameraPosition));
+	glUniform3fv(glGetUniformLocation(modelProgramID, "lightDirection"), 1, glm::value_ptr(lightDirection));
+
+	model->Draw(modelProgramID);
 }
 
 void renderSkyBox()
@@ -341,7 +383,7 @@ void processInput(GLFWwindow*& window)
 	}
 	else
 	{
-		speed = 10.0f;
+		speed = 5.0f;
 	}
 
 	if (keys[GLFW_KEY_W])
@@ -598,6 +640,15 @@ void createShaders()
 	glUniform1i(glGetUniformLocation(terrainProgramID, "grassTex"), 4);
 	glUniform1i(glGetUniformLocation(terrainProgramID, "rockTex"), 5);
 	glUniform1i(glGetUniformLocation(terrainProgramID, "snowTex"), 6);
+
+	createProgram(modelProgramID, "shaders/modelVertex.glsl", "shaders/modelFragment.glsl");
+	glUseProgram(modelProgramID);
+
+	glUniform1i(glGetUniformLocation(modelProgramID, "texture_diffuse1"), 0);
+	glUniform1i(glGetUniformLocation(modelProgramID, "texture_specular1"), 1);
+	glUniform1i(glGetUniformLocation(modelProgramID, "texture_normal1"), 2);
+	glUniform1i(glGetUniformLocation(modelProgramID, "texture_roughness1"), 3);
+	glUniform1i(glGetUniformLocation(modelProgramID, "texture_ao1"), 4);
 }
 
 void createProgram(GLuint &programID, const char* vertexShaderPath, const char* fragmentShaderPath)
