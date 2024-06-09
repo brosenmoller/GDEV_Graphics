@@ -41,7 +41,9 @@ public:
     void Draw(unsigned int shader)
     {
         for (unsigned int i = 0; i < meshes.size(); i++)
+        {
             meshes[i].Draw(shader);
+        }
     }
 
 private:
@@ -57,6 +59,11 @@ private:
             cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << endl;
             return;
         }
+        else
+        {
+            cout << "SUCCES" << endl;
+        }
+
         // retrieve the directory path of the filepath
         directory = path.substr(0, path.find_last_of('/'));
 

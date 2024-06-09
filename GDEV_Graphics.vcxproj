@@ -141,12 +141,22 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assimp-vc143-mt.dll" />
+    <None Include="pugixml.dll" />
+    <None Include="shaders\modelFragment.glsl" />
+    <None Include="shaders\modelVertex.glsl" />
     <None Include="shaders\simpleFragment.glsl" />
     <None Include="shaders\simpleVertex.glsl" />
     <None Include="shaders\skyFragment.glsl" />
     <None Include="shaders\skyVertex.glsl" />
     <None Include="shaders\terrainFragment.glsl" />
     <None Include="shaders\terrainVertex.glsl" />
+    <None Include="zlib1.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\mesh.h" />
+    <ClInclude Include="src\model.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
