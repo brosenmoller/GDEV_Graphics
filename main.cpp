@@ -2,6 +2,8 @@
 #include <fstream>
 #include <chrono>
 #include <thread>
+#include <vector>
+#include <stdlib.h>     /* srand, rand */
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -83,6 +85,10 @@ float camYaw, camPitch;
 
 // Backpack Data
 Model* backPackModel;
+Model* treeModel;
+Model* tree2Model;
+
+vector<glm::vec3> treePositions;
 
 int main()
 {
@@ -109,7 +115,8 @@ int main()
 	snow = loadTexture("assets/textures/snow.jpg");
 
 	backPackModel = new Model("assets/models/backpack/backpack.obj");
-
+	treeModel = new Model("assets/models/tree/tree.obj");
+	tree2Model = new Model("assets/models/tree/tree2.obj");
 
 	// Create Viewport
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -132,7 +139,19 @@ int main()
 		renderSkyBox();
 		renderTerrain();
 
-		renderModel(backPackModel, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(100, 100, 100));
+		for (int i = 0; i < treePositions.size(); i++)
+		{
+			renderModel(treeModel, treePositions[i], glm::vec3(0, 0, 0), glm::vec3(10, 10, 10));
+		}
+
+		renderModel(backPackModel, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(10, 10, 10));
+		//renderModel(treeModel, glm::vec3(50, 0, 100), glm::vec3(0, 0, 0), glm::vec3(5, 5, 5));
+		//renderModel(treeModel, glm::vec3(100, 0, 100), glm::vec3(0, 0, 0), glm::vec3(5, 5, 5));
+		//renderModel(treeModel, glm::vec3(150, 0, 100), glm::vec3(0, 0, 0), glm::vec3(5, 5, 5));
+
+		//renderModel(tree2Model, glm::vec3(50, 0, 50), glm::vec3(0, 0, 0), glm::vec3(5, 5, 5));
+		//renderModel(tree2Model, glm::vec3(100, 0, 0), glm::vec3(0, 0, 0), glm::vec3(5, 5, 5));
+		//renderModel(tree2Model, glm::vec3(150, 0, -50), glm::vec3(0, 0, 0), glm::vec3(5, 5, 5));
 		//renderCube();
 
 		glfwSwapBuffers(window);
@@ -159,7 +178,7 @@ int main()
 
 void renderModel(Model* model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
-	glEnable(GL_BLEND);
+	//glEnable(GL_BLEND);
 
 	// Alpha Blending
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -450,10 +469,20 @@ GLuint GeneratePlane(const char* heightmap, unsigned char* &data, GLenum format,
 		int z = i / width;
 
 		float texheight = (float)data[i * comp];
+		float vertexH = (texheight / 255.0f) * hScale;
+
+		if (vertexH < 100)
+		{
+			float rand = std::rand() % 10000;
+			if (rand < 2)
+			{
+				treePositions.push_back(glm::vec3(x * xzScale, vertexH, z * xzScale));
+			}
+		}
 
 		// TODO: set position
 		vertices[index++] = x * xzScale;
-		vertices[index++] = (texheight / 255.0f) * hScale;
+		vertices[index++] = vertexH;
 		vertices[index++] = z * xzScale;
 
 		// TODO: set normal
