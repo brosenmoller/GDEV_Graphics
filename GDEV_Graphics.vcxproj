@@ -139,20 +139,24 @@
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\core\Input.cpp" />
+    <ClCompile Include="src\core\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\modelFragment.glsl" />
-    <None Include="shaders\modelVertex.glsl" />
-    <None Include="shaders\simpleFragment.glsl" />
-    <None Include="shaders\simpleVertex.glsl" />
-    <None Include="shaders\skyFragment.glsl" />
-    <None Include="shaders\skyVertex.glsl" />
-    <None Include="shaders\terrainFragment.glsl" />
-    <None Include="shaders\terrainVertex.glsl" />
+    <None Include="assets\shaders\modelFragment.glsl" />
+    <None Include="assets\shaders\modelVertex.glsl" />
+    <None Include="assets\shaders\simpleFragment.glsl" />
+    <None Include="assets\shaders\simpleVertex.glsl" />
+    <None Include="assets\shaders\skyFragment.glsl" />
+    <None Include="assets\shaders\skyVertex.glsl" />
+    <None Include="assets\shaders\terrainFragment.glsl" />
+    <None Include="assets\shaders\terrainVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\Input.hpp" />
     <ClInclude Include="src\mesh.h" />
     <ClInclude Include="src\model.h" />
+    <ClInclude Include="src\core\Time.hpp" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
