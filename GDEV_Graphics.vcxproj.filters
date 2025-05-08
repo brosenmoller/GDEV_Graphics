@@ -15,28 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\core\Time.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core\Input.cpp">
+    <ClCompile Include="glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\simpleVertex.glsl" />
-    <None Include="assets\shaders\simpleFragment.glsl" />
-    <None Include="assets\shaders\skyFragment.glsl" />
-    <None Include="assets\shaders\skyVertex.glsl" />
-    <None Include="assets\shaders\terrainFragment.glsl" />
-    <None Include="assets\shaders\terrainVertex.glsl" />
-    <None Include="assets\shaders\modelFragment.glsl" />
-    <None Include="assets\shaders\modelVertex.glsl" />
+    <None Include="shaders\simpleVertex.glsl" />
+    <None Include="shaders\simpleFragment.glsl" />
+    <None Include="shaders\skyFragment.glsl" />
+    <None Include="shaders\skyVertex.glsl" />
+    <None Include="shaders\terrainFragment.glsl" />
+    <None Include="shaders\terrainVertex.glsl" />
+    <None Include="shaders\modelFragment.glsl" />
+    <None Include="shaders\modelVertex.glsl" />
+    <None Include="..\..\vcpkg\packages\assimp_x64-windows\bin\assimp-vc143-mt.pdb" />
+    <None Include="..\..\vcpkg\packages\assimp_x64-windows\bin\assimp-vc143-mt.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mesh.h">
@@ -46,12 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\Time.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\Input.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -78,6 +78,15 @@
     <IncludePath>C:\CppCoding\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\CppCoding\lib\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgUseStatic>false</VcpkgUseStatic>
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>false</VcpkgEnableManifest>
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -116,7 +125,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mtd.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\CppCoding\lib\Debug</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,30 +143,29 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc143-mt.lib;$(CoreLibraryDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\CppCoding\lib\Release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\core\Input.cpp" />
-    <ClCompile Include="src\core\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\modelFragment.glsl" />
-    <None Include="assets\shaders\modelVertex.glsl" />
-    <None Include="assets\shaders\simpleFragment.glsl" />
-    <None Include="assets\shaders\simpleVertex.glsl" />
-    <None Include="assets\shaders\skyFragment.glsl" />
-    <None Include="assets\shaders\skyVertex.glsl" />
-    <None Include="assets\shaders\terrainFragment.glsl" />
-    <None Include="assets\shaders\terrainVertex.glsl" />
+    <None Include="..\..\vcpkg\packages\assimp_x64-windows\bin\assimp-vc143-mt.dll" />
+    <None Include="..\..\vcpkg\packages\assimp_x64-windows\bin\assimp-vc143-mt.pdb" />
+    <None Include="shaders\modelFragment.glsl" />
+    <None Include="shaders\modelVertex.glsl" />
+    <None Include="shaders\simpleFragment.glsl" />
+    <None Include="shaders\simpleVertex.glsl" />
+    <None Include="shaders\skyFragment.glsl" />
+    <None Include="shaders\skyVertex.glsl" />
+    <None Include="shaders\terrainFragment.glsl" />
+    <None Include="shaders\terrainVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\core\Input.hpp" />
     <ClInclude Include="src\mesh.h" />
     <ClInclude Include="src\model.h" />
-    <ClInclude Include="src\core\Time.hpp" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
