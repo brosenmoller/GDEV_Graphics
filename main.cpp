@@ -473,7 +473,7 @@ GLuint GeneratePlane(const char* heightmap, unsigned char* &data, GLenum format,
 
 		if (vertexH < 100)
 		{
-			float rand = std::rand() % 10000;
+			int rand = std::rand() % 10000;
 			if (rand < 2)
 			{
 				treePositions.push_back(glm::vec3(x * xzScale, vertexH, z * xzScale));
