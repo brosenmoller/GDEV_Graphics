@@ -153,8 +153,8 @@
     <ClCompile Include="src\core\File.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\Time.cpp" />
-    <ClCompile Include="src\mesh.cpp" />
-    <ClCompile Include="src\model.cpp" />
+    <ClCompile Include="src\rendering\mesh.cpp" />
+    <ClCompile Include="src\rendering\model.cpp" />
     <ClCompile Include="src\Objects\Camera.cpp" />
     <ClCompile Include="src\Objects\Object.cpp" />
     <ClCompile Include="src\rendering\Material.cpp" />
@@ -176,8 +176,8 @@
     <ClInclude Include="src\core\File.hpp" />
     <ClInclude Include="src\core\Input.hpp" />
     <ClInclude Include="src\core\Time.hpp" />
-    <ClInclude Include="src\mesh.h" />
-    <ClInclude Include="src\model.h" />
+    <ClInclude Include="src\rendering\mesh.hpp" />
+    <ClInclude Include="src\rendering\model.hpp" />
     <ClInclude Include="src\Objects\IUpdate.hpp" />
     <ClInclude Include="src\Objects\Object.hpp" />
     <ClInclude Include="src\rendering\Material.hpp" />

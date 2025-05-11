@@ -42,10 +42,10 @@
     <ClCompile Include="src\Objects\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model.cpp">
+    <ClCompile Include="src\rendering\model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh.cpp">
+    <ClCompile Include="src\rendering\mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,10 +60,10 @@
     <None Include="shaders\modelVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\mesh.h">
+    <ClInclude Include="src\rendering\mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model.h">
+    <ClInclude Include="src\rendering\model.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stb_image.h">

@@ -11,6 +11,7 @@
 #include "src/Objects/Camera.hpp"
 #include "src/Objects/RenderObject.hpp"
 #include "src/core/constants.hpp"
+#include "src/rendering/model.hpp"
 
 using Clock = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
