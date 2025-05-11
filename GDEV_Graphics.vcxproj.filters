@@ -30,6 +30,21 @@
     <ClCompile Include="src\core\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Objects\RenderObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rendering\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Objects\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Objects\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simpleVertex.glsl" />
@@ -40,8 +55,6 @@
     <None Include="shaders\terrainVertex.glsl" />
     <None Include="shaders\modelFragment.glsl" />
     <None Include="shaders\modelVertex.glsl" />
-    <None Include="..\..\vcpkg\packages\assimp_x64-windows\bin\assimp-vc143-mt.pdb" />
-    <None Include="..\..\vcpkg\packages\assimp_x64-windows\bin\assimp-vc143-mt.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\mesh.h">
@@ -59,10 +72,28 @@
     <ClInclude Include="src\core\Time.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rendering\Object.hpp">
+    <ClInclude Include="src\Objects\RenderObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\File.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\MaterialTexture.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rendering\Material.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Objects\Camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Objects\IUpdate.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Objects\Object.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core\constants.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

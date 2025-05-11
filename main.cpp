@@ -3,9 +3,14 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <thread>
+#include <vector>
 
 #include "src/core/Input.hpp"
 #include "src/core/Time.hpp"
+#include "src/Objects/IUpdate.hpp"
+#include "src/Objects/Camera.hpp"
+#include "src/Objects/RenderObject.hpp"
+#include "src/core/constants.hpp"
 
 using Clock = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
@@ -13,6 +18,10 @@ using FloatDuration = std::chrono::duration<float>;
 
 // Forward Declare
 int init(GLFWwindow*& window);
+void updateFrameTime(TimePoint& frameStart);
+void setup();
+void process();
+void draw();
 
 // Variables
 unsigned int frames = 0;
@@ -20,14 +29,16 @@ int frameRate = 120;
 float wantedFrameTime = 1.0f / (float)frameRate;
 float deltaTime = wantedFrameTime;
 
-const int SCREEN_WIDTH = 1920;
-const int SCREEN_HEIGHT = 1080;
+std::vector<IUpdate> updateables;
+std::vector<RenderObject> renderObjects;
 
 int main()
 {
 	GLFWwindow* window;
 	int result = init(window);
 	if (result != 0) { return result; }
+
+	setup();
 
 	Time::deltaTime = wantedFrameTime;
 
@@ -39,7 +50,13 @@ int main()
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		if (Input::keys[GLFW_KEY_ESCAPE])
+		{
+			glfwSetWindowShouldClose(window, true);
+		}
 
+		process();
+		draw();
 
 		glfwSwapBuffers(window);
 
@@ -47,20 +64,48 @@ int main()
 		glfwPollEvents();
 
 		// Update Frame Counter
-		TimePoint frameEnd = Clock::now();
-		FloatDuration elapsed = frameEnd - frameStart;
-		deltaTime = elapsed.count();  // deltaTime in seconds
-
-		float waitTime = wantedFrameTime - deltaTime;
-		if (waitTime > 0.0f) {
-			std::this_thread::sleep_for(FloatDuration(waitTime));
-		}
-
-		Time::time += deltaTime;
-		frames++;
+		updateFrameTime(frameStart);
 	}
 
 	return 0;
+}
+
+void setup()
+{
+	Camera::init(glm::normalize(glm::vec3(0.0f, -0.5f, -0.5f)), glm::vec3(100.0f, 125.0f, 100.0f));
+
+
+}
+
+void process() 
+{
+	for (int i = 0; i < updateables.size(); i++) 
+	{
+		updateables[i].Update();
+	}
+}
+
+void draw()
+{
+	for (int i = 0; i < renderObjects.size(); i++)
+	{
+		renderObjects[i].DrawObject();
+	}
+}
+
+void updateFrameTime(TimePoint& frameStart)
+{
+	TimePoint frameEnd = Clock::now();
+	FloatDuration elapsed = frameEnd - frameStart;
+	deltaTime = elapsed.count();  // deltaTime in seconds
+
+	float waitTime = wantedFrameTime - deltaTime;
+	if (waitTime > 0.0f) {
+		std::this_thread::sleep_for(FloatDuration(waitTime));
+	}
+
+	Time::time += deltaTime;
+	frames++;
 }
 
 int init(GLFWwindow*& window)

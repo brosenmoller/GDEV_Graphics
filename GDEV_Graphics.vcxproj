@@ -153,10 +153,13 @@
     <ClCompile Include="src\core\File.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\Time.cpp" />
+    <ClCompile Include="src\model.cpp" />
+    <ClCompile Include="src\Objects\Camera.cpp" />
+    <ClCompile Include="src\Objects\Object.cpp" />
+    <ClCompile Include="src\rendering\Material.cpp" />
+    <ClCompile Include="src\Objects\RenderObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\vcpkg\packages\assimp_x64-windows\bin\assimp-vc143-mt.dll" />
-    <None Include="..\..\vcpkg\packages\assimp_x64-windows\bin\assimp-vc143-mt.pdb" />
     <None Include="shaders\modelFragment.glsl" />
     <None Include="shaders\modelVertex.glsl" />
     <None Include="shaders\simpleFragment.glsl" />
@@ -167,12 +170,18 @@
     <None Include="shaders\terrainVertex.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\constants.hpp" />
+    <ClInclude Include="src\Objects\Camera.hpp" />
     <ClInclude Include="src\core\File.hpp" />
     <ClInclude Include="src\core\Input.hpp" />
     <ClInclude Include="src\core\Time.hpp" />
     <ClInclude Include="src\mesh.h" />
     <ClInclude Include="src\model.h" />
-    <ClInclude Include="src\rendering\Object.hpp" />
+    <ClInclude Include="src\Objects\IUpdate.hpp" />
+    <ClInclude Include="src\Objects\Object.hpp" />
+    <ClInclude Include="src\rendering\Material.hpp" />
+    <ClInclude Include="src\Objects\RenderObject.hpp" />
+    <ClInclude Include="src\rendering\MaterialTexture.hpp" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
