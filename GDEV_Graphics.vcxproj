@@ -160,6 +160,7 @@
     <ClCompile Include="src\Objects\Object.cpp" />
     <ClCompile Include="src\rendering\Material.cpp" />
     <ClCompile Include="src\Objects\RenderObject.cpp" />
+    <ClCompile Include="src\rendering\SkyBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\modelFragment.glsl" />
@@ -185,6 +186,7 @@
     <ClInclude Include="src\rendering\Material.hpp" />
     <ClInclude Include="src\Objects\RenderObject.hpp" />
     <ClInclude Include="src\rendering\MaterialTexture.hpp" />
+    <ClInclude Include="src\rendering\SkyBox.hpp" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
