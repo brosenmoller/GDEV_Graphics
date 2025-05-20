@@ -1,5 +1,6 @@
 #include "RenderObject.hpp"
 #include "Camera.hpp"
+#include "../core/Debug.hpp"
 
 RenderObject::RenderObject(Model* model, Material* material, glm::vec3 position, glm::quat rotation, glm::vec3 scale)
 	: Object(position, rotation, scale), material(material), model(model) { }

@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 #include "../core/Input.hpp"
 #include "../core/constants.hpp"
+#include "../core/Debug.hpp"
 
 std::unique_ptr<Camera> Camera::instance_;
 std::once_flag Camera::initFlag_;
