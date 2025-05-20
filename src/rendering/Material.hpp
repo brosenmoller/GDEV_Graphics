@@ -5,7 +5,6 @@
 
 class Material {
 public:
-    static GLuint lastShaderProgramID;
     GLuint shaderProgram;
     std::vector<MaterialTexture> textures;
 

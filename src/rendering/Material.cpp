@@ -3,13 +3,8 @@
 #include <iostream>
 #include "../core/Debug.hpp"
 
-GLuint Material::lastShaderProgramID = 0;
-
 Material::Material(const char* vertexShaderPath, const char* fragmentShaderPath)
 {
-	shaderProgram = lastShaderProgramID;
-	lastShaderProgramID++;
-
     createProgram(shaderProgram, vertexShaderPath, fragmentShaderPath);
     glUseProgram(shaderProgram);
 
@@ -51,10 +46,10 @@ void Material::createProgram(GLuint& programID, const char* vertexShaderPath, co
 	glCompileShader(framgentShaderID);
 
 
-	glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &succes);
+	glGetShaderiv(framgentShaderID, GL_COMPILE_STATUS, &succes);
 	if (!succes)
 	{
-		glGetShaderInfoLog(vertexShaderID, 512, nullptr, infoLog);
+		glGetShaderInfoLog(framgentShaderID, 512, nullptr, infoLog);
 		std::cout << "ERROR Compiling fragment shader" << infoLog << std::endl;
 	}
 

@@ -52,8 +52,6 @@ int main()
 	while (!glfwWindowShouldClose(window))
 	{
 		TimePoint frameStart = Clock::now();
-
-		// background color set & render
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -66,11 +64,7 @@ int main()
 		draw();
 
 		glfwSwapBuffers(window);
-
-		// event polls
 		glfwPollEvents();
-
-		// Update Frame Counter
 		updateFrameTime(frameStart);
 	}
 
