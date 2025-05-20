@@ -1,6 +1,6 @@
 #include "model.hpp"
 #define STB_IMAGE_IMPLEMENTATION
-#include "../stb_image.h"
+#include "../../stb_image.h"
 
 unsigned int Model::TextureFromFile(const char* path, const string& directory, bool gamma)
 {

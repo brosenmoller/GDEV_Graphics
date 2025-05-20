@@ -5,7 +5,8 @@
 
 struct MaterialTexture {
     GLuint id;
-    std::string type; // e.g., "texture_diffuse", "texture_specular"
+    std::string type;
     std::string path;
-    MaterialTexture(GLuint id, std::string path, std::string type) : id(id), path(path), type(type) {};
+    MaterialTexture(const char* path, const char* type);
+    GLuint loadTexture(const char* path, int comp = 0);
 };

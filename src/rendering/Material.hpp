@@ -5,8 +5,12 @@
 
 class Material {
 public:
+    static GLuint lastShaderProgramID;
     GLuint shaderProgram;
     std::vector<MaterialTexture> textures;
 
-    void Use();
+    Material(const char* vertexShaderPath, const char* fragmentShaderPath);
+    static void createProgram(GLuint& programID, const char* vertexShaderPath, const char* fragmentShaderPath);
+
+    void Use() const;
 };

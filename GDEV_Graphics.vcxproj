@@ -153,6 +153,7 @@
     <ClCompile Include="src\core\File.cpp" />
     <ClCompile Include="src\core\Input.cpp" />
     <ClCompile Include="src\core\Time.cpp" />
+    <ClCompile Include="src\rendering\MaterialTexture.cpp" />
     <ClCompile Include="src\rendering\mesh.cpp" />
     <ClCompile Include="src\rendering\model.cpp" />
     <ClCompile Include="src\Objects\Camera.cpp" />
@@ -172,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\core\constants.hpp" />
+    <ClInclude Include="src\core\Debug.hpp" />
     <ClInclude Include="src\Objects\Camera.hpp" />
     <ClInclude Include="src\core\File.hpp" />
     <ClInclude Include="src\core\Input.hpp" />
