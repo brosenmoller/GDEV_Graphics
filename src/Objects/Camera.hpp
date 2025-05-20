@@ -35,6 +35,8 @@ public:
 
 	Camera(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation = glm::quat(glm::vec3(0, 0, 0)), glm::vec3 scale = glm::vec3(1, 1, 1));
 	void Update();
+	void UpdateCameraMovement();
+	void UpdateCameraLook();
 
 private:
 	static std::unique_ptr<Camera> instance_;

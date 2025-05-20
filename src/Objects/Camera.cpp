@@ -17,21 +17,14 @@ Camera::Camera(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation,
 
 void Camera::Update()
 {
+	UpdateCameraMovement();
+	UpdateCameraLook();
+
 	view = glm::lookAt(position, position + cameraForward, cameraUp);
+}
 
-	camYaw -= Input::mouseDelta.x * 0.5f;
-	camPitch += Input::mouseDelta.y * 0.2f;
-
-	camPitch = glm::clamp(camPitch, -85.0f, 85.0f);
-
-	if (camYaw > 180.0f) { camYaw -= 360.0f; }
-	if (camYaw < -180.0f) { camYaw += 360.0f; }
-
-	rotation = glm::quat(glm::vec3(glm::radians(camPitch), glm::radians(camYaw), 0.0f));
-
-	cameraForward = rotation * glm::vec3(0, 0, 1);
-	cameraUp = rotation * glm::vec3(0, 1, 0);
-
+void Camera::UpdateCameraMovement()
+{
 	float speed;
 	if (Input::keys[GLFW_KEY_LEFT_SHIFT])
 	{
@@ -58,4 +51,24 @@ void Camera::Update()
 	{
 		position += rotation * glm::vec3(-1 * speed, 0, 0);
 	}
+}
+
+void Camera::UpdateCameraLook()
+{
+	if (glm::length(Input::mouseDelta) < 0.01f) { return; }
+
+	camYaw -= Input::mouseDelta.x * 0.5f;
+	camPitch += Input::mouseDelta.y * 0.2f;
+
+	camPitch = glm::clamp(camPitch, -85.0f, 85.0f);
+
+	if (camYaw > 180.0f) { camYaw -= 360.0f; }
+	if (camYaw < -180.0f) { camYaw += 360.0f; }
+
+	rotation = glm::quat(glm::vec3(glm::radians(camPitch), glm::radians(camYaw), 0.0f));
+
+	cameraForward = rotation * glm::vec3(0, 0, 1);
+	cameraUp = rotation * glm::vec3(0, 1, 0);
+
+	Input::mouseDelta = glm::vec2(0.0f);
 }
