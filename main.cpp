@@ -85,6 +85,9 @@ void setup()
 	baseModelMaterial = new Material("assets/shaders/modelVertex.glsl", "assets/shaders/modelFragment.glsl");
 
 	addRenderObject(treeModel, baseModelMaterial);
+	addRenderObject(treeModel, baseModelMaterial, glm::vec3(5, 0, 0));
+	addRenderObject(treeModel, baseModelMaterial, glm::vec3(10, 0, 0));
+	addRenderObject(treeModel, baseModelMaterial, glm::vec3(15, 0, 0));
 	addRenderObject(backpackModel, baseModelMaterial, glm::vec3(0, 0, 5));
 }
 
