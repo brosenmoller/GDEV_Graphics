@@ -37,6 +37,7 @@ std::vector<IUpdate*> updateables;
 std::vector<RenderObject*> renderObjects;
 
 Model* treeModel;
+Model* backpackModel;
 Material* baseModelMaterial;
 
 int main()
@@ -76,13 +77,15 @@ void setup()
 	SkyBox* skyBox = new SkyBox();
 	updateables.push_back(skyBox);
 
-	Camera::init(glm::normalize(glm::vec3(0.0f, -0.5f, -0.5f)), glm::vec3(100.0f, 125.0f, 100.0f));
+	Camera::init(glm::normalize(glm::vec3(0.0f, -0.5f, -0.5f)), glm::vec3(0, 0, 0));
 	updateables.push_back(Camera::Instance());
+	//treeModel = new Model("assets/models/backpack/backpack.obj");
 	treeModel = new Model("assets/models/tree/tree.obj");
+	backpackModel = new Model("assets/models/backpack/backpack.obj");
 	baseModelMaterial = new Material("assets/shaders/modelVertex.glsl", "assets/shaders/modelFragment.glsl");
 
 	addRenderObject(treeModel, baseModelMaterial);
-	addRenderObject(treeModel, baseModelMaterial, glm::vec3(0, 0, 5));
+	addRenderObject(backpackModel, baseModelMaterial, glm::vec3(0, 0, 5));
 }
 
 void process() 
@@ -109,9 +112,9 @@ void draw()
 
 void addRenderObject(Model* model, Material* material, glm::vec3 position)
 {
-	RenderObject* treeObject = new RenderObject(model, material, position);
-	updateables.push_back(treeObject);
-	renderObjects.push_back(treeObject);
+	RenderObject* renderObject = new RenderObject(model, material, position);
+	updateables.push_back(renderObject);
+	renderObjects.push_back(renderObject);
 }
 
 void updateFrameTime(TimePoint& frameStart)

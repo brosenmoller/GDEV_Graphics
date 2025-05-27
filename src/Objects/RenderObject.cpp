@@ -7,8 +7,6 @@ RenderObject::RenderObject(Model* model, Material* material, glm::vec3 position,
 
 void RenderObject::DrawObject() const
 {
-	material->Use();
-
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_DEPTH_TEST);
@@ -16,12 +14,17 @@ void RenderObject::DrawObject() const
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
+	material->Use();
+
 	glUniformMatrix4fv(glGetUniformLocation(material->shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(RenderObject::CalculateTransform()));
 	glUniformMatrix4fv(glGetUniformLocation(material->shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(Camera::Instance()->view));
 	glUniformMatrix4fv(glGetUniformLocation(material->shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(Camera::Instance()->projection));
 
 	glUniform3fv(glGetUniformLocation(material->shaderProgram, "cameraPosition"), 1, glm::value_ptr(Camera::Instance()->position));
 	glUniform3fv(glGetUniformLocation(material->shaderProgram, "lightDirection"), 1, glm::value_ptr(Camera::Instance()->lightDirection));
+	//Debug::Log(RenderObject::CalculateTransform());
+	//Debug::Log(Camera::Instance()->position);
+	//Debug::Log(Camera::Instance()->lightDirection);
 
 	model->Draw(material->shaderProgram);
 

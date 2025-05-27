@@ -28,11 +28,11 @@ void Camera::UpdateCameraMovement()
 	float speed;
 	if (Input::keys[GLFW_KEY_LEFT_SHIFT])
 	{
-		speed = 50.0f;
+		speed = 0.5f;
 	}
 	else
 	{
-		speed = 5.0f;
+		speed = 0.05f;
 	}
 
 	if (Input::keys[GLFW_KEY_W])
