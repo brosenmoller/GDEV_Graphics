@@ -14,6 +14,7 @@
 #include "src/rendering/model.hpp"
 #include "src/core/Debug.hpp"
 #include "src/rendering/SkyBox.hpp"
+#include "src/Scenes/Scene.hpp"
 
 using Clock = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
@@ -39,6 +40,8 @@ std::vector<RenderObject*> renderObjects;
 Model* treeModel;
 Model* backpackModel;
 Material* baseModelMaterial;
+
+Scene* scene;
 
 int main()
 {
@@ -74,25 +77,13 @@ int main()
 
 void setup()
 {
-	SkyBox* skyBox = new SkyBox();
-	updateables.push_back(skyBox);
-
-	Camera::init(glm::normalize(glm::vec3(0.0f, -0.5f, -0.5f)), glm::vec3(0, 0, 0));
-	updateables.push_back(Camera::Instance());
-	//treeModel = new Model("assets/models/backpack/backpack.obj");
-	treeModel = new Model("assets/models/tree/tree.obj");
-	backpackModel = new Model("assets/models/backpack/backpack.obj");
-	baseModelMaterial = new Material("assets/shaders/modelVertex.glsl", "assets/shaders/modelFragment.glsl");
-
-	addRenderObject(treeModel, baseModelMaterial);
-	addRenderObject(treeModel, baseModelMaterial, glm::vec3(5, 0, 0));
-	addRenderObject(treeModel, baseModelMaterial, glm::vec3(10, 0, 0));
-	addRenderObject(treeModel, baseModelMaterial, glm::vec3(15, 0, 0));
-	addRenderObject(backpackModel, baseModelMaterial, glm::vec3(0, 0, 5));
+	scene = new Scene("assets/scenes/scene1.scene");
+	scene->CreateScene();
 }
 
 void process() 
 {
+	scene->UpdateScene();
 	for (IUpdate* obj : updateables) 
 	{
 		if (obj)

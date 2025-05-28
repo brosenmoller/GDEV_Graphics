@@ -22,9 +22,6 @@ void RenderObject::DrawObject() const
 
 	glUniform3fv(glGetUniformLocation(material->shaderProgram, "cameraPosition"), 1, glm::value_ptr(Camera::Instance()->position));
 	glUniform3fv(glGetUniformLocation(material->shaderProgram, "lightDirection"), 1, glm::value_ptr(Camera::Instance()->lightDirection));
-	//Debug::Log(RenderObject::CalculateTransform());
-	//Debug::Log(Camera::Instance()->position);
-	//Debug::Log(Camera::Instance()->lightDirection);
 
 	model->Draw(material->shaderProgram);
 

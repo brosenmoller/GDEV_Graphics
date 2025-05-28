@@ -14,10 +14,16 @@ public:
 		return instance_.get();
 	}
 
-	static void init(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation = glm::quat(glm::vec3(0, 0, 0)), glm::vec3 scale = glm::vec3(1, 1, 1)) {
-		std::call_once(initFlag_, [&]() {
-			instance_ = std::unique_ptr<Camera>(new Camera(lightDirection, position, rotation, scale));
-		});
+	static void init(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation = glm::quat(glm::vec3(0, 0, 0))) {
+		std::lock_guard<std::mutex> lock(initMutex_);
+		if (!instance_) {
+			instance_ = std::unique_ptr<Camera>(new Camera(lightDirection, position, rotation));
+		};
+	}
+
+	static void destroy() {
+		std::lock_guard<std::mutex> lock(initMutex_);
+		instance_.reset();
 	}
 
 	Camera(const Camera&) = delete;
@@ -33,12 +39,14 @@ public:
 
 	float camYaw, camPitch;
 
-	Camera(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation = glm::quat(glm::vec3(0, 0, 0)), glm::vec3 scale = glm::vec3(1, 1, 1));
 	void Update();
 	void UpdateCameraMovement();
 	void UpdateCameraLook();
 
+	Camera(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation = glm::quat(glm::vec3(0, 0, 0)));
+	~Camera() {}
 private:
+
 	static std::unique_ptr<Camera> instance_;
-	static std::once_flag initFlag_;
+	static std::mutex initMutex_;
 };

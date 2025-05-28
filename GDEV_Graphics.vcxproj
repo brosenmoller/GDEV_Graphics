@@ -161,6 +161,7 @@
     <ClCompile Include="src\rendering\Material.cpp" />
     <ClCompile Include="src\Objects\RenderObject.cpp" />
     <ClCompile Include="src\rendering\SkyBox.cpp" />
+    <ClCompile Include="src\Scenes\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\modelFragment.glsl" />
@@ -175,6 +176,7 @@
   <ItemGroup>
     <ClInclude Include="src\core\constants.hpp" />
     <ClInclude Include="src\core\Debug.hpp" />
+    <ClInclude Include="src\json.hpp" />
     <ClInclude Include="src\Objects\Camera.hpp" />
     <ClInclude Include="src\core\File.hpp" />
     <ClInclude Include="src\core\Input.hpp" />
@@ -187,6 +189,8 @@
     <ClInclude Include="src\Objects\RenderObject.hpp" />
     <ClInclude Include="src\rendering\MaterialTexture.hpp" />
     <ClInclude Include="src\rendering\SkyBox.hpp" />
+    <ClInclude Include="src\Scenes\Scene.hpp" />
+    <ClInclude Include="src\Scenes\SceneData.hpp" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

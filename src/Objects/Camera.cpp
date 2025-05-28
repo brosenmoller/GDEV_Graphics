@@ -3,11 +3,10 @@
 #include "../core/constants.hpp"
 #include "../core/Debug.hpp"
 
-std::unique_ptr<Camera> Camera::instance_;
-std::once_flag Camera::initFlag_;
+std::unique_ptr<Camera> Camera::instance_ = nullptr;
+std::mutex Camera::initMutex_;
 
-Camera::Camera(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation, glm::vec3 scale)
-	: lightDirection(lightDirection), Object(position, rotation, scale)
+Camera::Camera(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation) : lightDirection(lightDirection), Object(position, rotation)
 {
 	projection = glm::perspective(glm::radians(50.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 5000.0f);
 	camPitch = 0;

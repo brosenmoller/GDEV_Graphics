@@ -15,6 +15,9 @@ Material::Material(const char* vertexShaderPath, const char* fragmentShaderPath)
     glUniform1i(glGetUniformLocation(shaderProgram, "texture_ao1"), 4);
 }
 
+Material::Material(std::string vertexShaderPath, std::string fragmentShaderPath) 
+	: Material(vertexShaderPath.c_str(), fragmentShaderPath.c_str()) {}
+
 void Material::createProgram(GLuint& programID, const char* vertexShaderPath, const char* fragmentShaderPath)
 {
 	char* vertexSource;
