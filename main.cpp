@@ -15,6 +15,7 @@
 #include "src/core/Debug.hpp"
 #include "src/rendering/SkyBox.hpp"
 #include "src/Scenes/Scene.hpp"
+#include "src/Scenes/SceneManager.hpp"
 
 using Clock = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
@@ -42,6 +43,7 @@ Model* backpackModel;
 Material* baseModelMaterial;
 
 Scene* scene;
+SceneManager* sceneManager;
 
 int main()
 {
@@ -64,8 +66,9 @@ int main()
 			glfwSetWindowShouldClose(window, true);
 		}
 
-		process();
-		draw();
+		sceneManager->UpdateScene();
+		//process();
+		//draw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -77,13 +80,16 @@ int main()
 
 void setup()
 {
-	scene = new Scene("assets/scenes/scene1.scene");
-	scene->CreateScene();
+	sceneManager = new SceneManager("assets/scenes/");
+	sceneManager->LoadScene("scene1");
+
+	//scene = new Scene("assets/scenes/scene1.scene");
+	//scene->CreateScene();
 }
 
 void process() 
 {
-	scene->UpdateScene();
+	//scene->UpdateScene();
 	for (IUpdate* obj : updateables) 
 	{
 		if (obj)

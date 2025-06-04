@@ -92,6 +92,8 @@ void Scene::UpdateScene()
 
 void Scene::CreateScene()
 {
+	Debug::Log("Create Scene");
+
 	Camera::destroy();
 	Camera::init(sceneData.lightDirection, sceneData.cameraPosition, sceneData.cameraRotation);
 	Debug::Log(sceneData.cameraPosition);
@@ -121,8 +123,6 @@ void Scene::CreateScene()
 		addRenderObject(objectData.modelKey, objectData.materialKey, objectData.position, objectData.rotation, objectData.scale);
 		Debug::Log(objectData.position);
 	}
-
-	Debug::Log(std::to_string(renderObjects.size()));
 }
 
 void Scene::DeleteScene()

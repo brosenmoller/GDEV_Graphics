@@ -57,6 +57,9 @@
     <ClCompile Include="src\Scenes\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scenes\SceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\simpleVertex.glsl" />
@@ -121,6 +124,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\SceneManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
