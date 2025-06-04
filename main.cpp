@@ -7,14 +7,7 @@
 
 #include "src/core/Input.hpp"
 #include "src/core/Time.hpp"
-#include "src/Objects/IUpdate.hpp"
-#include "src/Objects/Camera.hpp"
-#include "src/Objects/RenderObject.hpp"
 #include "src/core/constants.hpp"
-#include "src/rendering/model.hpp"
-#include "src/core/Debug.hpp"
-#include "src/rendering/SkyBox.hpp"
-#include "src/Scenes/Scene.hpp"
 #include "src/Scenes/SceneManager.hpp"
 
 using Clock = std::chrono::high_resolution_clock;
@@ -25,9 +18,6 @@ using FloatDuration = std::chrono::duration<float>;
 int init(GLFWwindow*& window);
 void updateFrameTime(TimePoint& frameStart);
 void setup();
-void process();
-void draw();
-void addRenderObject(Model* model, Material* material, glm::vec3 position = glm::vec3(0, 0, 0));
 
 // Variables
 unsigned int frames = 0;
@@ -35,14 +25,6 @@ int frameRate = 120;
 float wantedFrameTime = 1.0f / (float)frameRate;
 float deltaTime = wantedFrameTime;
 
-std::vector<IUpdate*> updateables;
-std::vector<RenderObject*> renderObjects;
-
-Model* treeModel;
-Model* backpackModel;
-Material* baseModelMaterial;
-
-Scene* scene;
 SceneManager* sceneManager;
 
 int main()
@@ -66,9 +48,17 @@ int main()
 			glfwSetWindowShouldClose(window, true);
 		}
 
+		if (Input::keys[GLFW_KEY_1])
+		{
+			sceneManager->LoadScene("scene1");
+		}
+
+		if (Input::keys[GLFW_KEY_2])
+		{
+			sceneManager->LoadScene("scene2");
+		}
+
 		sceneManager->UpdateScene();
-		//process();
-		//draw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -80,41 +70,7 @@ int main()
 
 void setup()
 {
-	sceneManager = new SceneManager("assets/scenes/");
-	sceneManager->LoadScene("scene1");
-
-	//scene = new Scene("assets/scenes/scene1.scene");
-	//scene->CreateScene();
-}
-
-void process() 
-{
-	//scene->UpdateScene();
-	for (IUpdate* obj : updateables) 
-	{
-		if (obj)
-		{
-			obj->Update();
-		}
-	}
-}
-
-void draw()
-{
-	for (RenderObject* obj : renderObjects)
-	{
-		if (obj)
-		{
-			obj->DrawObject();
-		}
-	}
-}
-
-void addRenderObject(Model* model, Material* material, glm::vec3 position)
-{
-	RenderObject* renderObject = new RenderObject(model, material, position);
-	updateables.push_back(renderObject);
-	renderObjects.push_back(renderObject);
+	sceneManager = new SceneManager("assets/scenes/", "scene1");
 }
 
 void updateFrameTime(TimePoint& frameStart)

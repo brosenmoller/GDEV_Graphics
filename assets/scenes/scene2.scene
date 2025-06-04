@@ -32,7 +32,7 @@
         {
             "modelKey": "treeModel",
             "materialKey": "modelMaterial",
-            "position": [ 0, 5, 0 ]
+            "position": [ 40, 5, 0 ]
         },
         {
             "modelKey": "treeModel",
