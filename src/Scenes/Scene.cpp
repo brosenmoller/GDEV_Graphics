@@ -92,11 +92,8 @@ void Scene::UpdateScene()
 
 void Scene::CreateScene()
 {
-	Debug::Log("Create Scene");
-
 	Camera::destroy();
 	Camera::init(sceneData.lightDirection, sceneData.cameraPosition, sceneData.cameraRotation);
-	Debug::Log(sceneData.cameraPosition);
 
 	skybox = std::make_shared<SkyBox>();
 	updateables.push_back(skybox);
@@ -121,7 +118,6 @@ void Scene::CreateScene()
 	{
 		const ObjectData objectData = sceneData.objects[i];
 		addRenderObject(objectData.modelKey, objectData.materialKey, objectData.position, objectData.rotation, objectData.scale);
-		Debug::Log(objectData.position);
 	}
 }
 
