@@ -33,12 +33,22 @@ void SkyBox::Update()
 	glUniform3fv(glGetUniformLocation(skyProgramID, "cameraPosition"), 1, glm::value_ptr(Camera::Instance()->position));
 	glUniform3fv(glGetUniformLocation(skyProgramID, "lightDirection"), 1, glm::value_ptr(Camera::Instance()->lightDirection));
 
+	glUniform3fv(glGetUniformLocation(skyProgramID, "topColorValue"), 1, glm::value_ptr(skyboxData->topColor));
+	glUniform3fv(glGetUniformLocation(skyProgramID, "middleColorValue"), 1, glm::value_ptr(skyboxData->middleColor));
+	glUniform3fv(glGetUniformLocation(skyProgramID, "bottomColorValue"), 1, glm::value_ptr(skyboxData->bottomColor));
+	glUniform3fv(glGetUniformLocation(skyProgramID, "sunColorValue"), 1, glm::value_ptr(skyboxData->sunColor));
+
 	glBindVertexArray(boxVAO);
 	glDrawElements(GL_TRIANGLES, boxNumIndices, GL_UNSIGNED_INT, 0);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH);
 	glEnable(GL_DEPTH_TEST);
+}
+
+void SkyBox::SetSkyBoxData(SkyBoxData* _skyboxData)
+{
+	skyboxData = _skyboxData;
 }
 
 void SkyBox::createCubeMesh()

@@ -1,12 +1,11 @@
 #pragma once
 
-#include <vector>
-#include "MaterialTexture.hpp"
+#include <glad/glad.h>
+#include <string>
 
 class Material {
 public:
     GLuint shaderProgram;
-    std::vector<MaterialTexture> textures;
 
     Material(const char* vertexShaderPath, const char* fragmentShaderPath);
     Material(std::string vertexShaderPath, std::string fragmentShaderPath);

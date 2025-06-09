@@ -77,7 +77,7 @@ void updateFrameTime(TimePoint& frameStart)
 {
 	TimePoint frameEnd = Clock::now();
 	FloatDuration elapsed = frameEnd - frameStart;
-	deltaTime = elapsed.count();  // deltaTime in seconds
+	deltaTime = elapsed.count();
 
 	float waitTime = wantedFrameTime - deltaTime;
 	if (waitTime > 0.0f) {

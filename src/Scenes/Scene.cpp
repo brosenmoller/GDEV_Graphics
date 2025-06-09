@@ -98,6 +98,8 @@ void Scene::CreateScene()
 		skybox = std::make_shared<SkyBox>();
 	}
 
+	skybox->SetSkyBoxData(&sceneData.skyBox);
+
 	updateables.push_back(skybox);
 
 	for (std::size_t i = 0; i < sceneData.materials.size(); i++) 
