@@ -63,6 +63,27 @@ void SceneManager::LoadScene(std::string sceneName)
 
     if (scenes.find(activeScene) != scenes.end()) 
     {
+        for (MaterialData materialData : scenes[sceneName]->sceneData.materials)
+        {
+            if (scenes[activeScene]->materialPointers.find(materialData.materialKey) == scenes[activeScene]->materialPointers.end()) { continue; }
+
+            scenes[sceneName]->materialPointers.insert({
+                materialData.materialKey,
+                std::move(scenes[activeScene]->materialPointers[materialData.materialKey])
+            });
+        }
+
+        for (ModelData modelData : scenes[sceneName]->sceneData.models)
+        {
+            if (scenes[activeScene]->modelPointers.find(modelData.modelKey) == scenes[activeScene]->modelPointers.end()) { continue; }
+
+            scenes[sceneName]->modelPointers.insert({
+                modelData.modelKey,
+                std::move(scenes[activeScene]->modelPointers[modelData.modelKey])
+            });
+        }
+
+        scenes[sceneName]->skybox = scenes[activeScene]->skybox;
         scenes[activeScene]->DeleteScene();
     }
 

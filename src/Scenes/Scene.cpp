@@ -92,14 +92,18 @@ void Scene::UpdateScene()
 
 void Scene::CreateScene()
 {
-	Camera::destroy();
 	Camera::init(sceneData.lightDirection, sceneData.cameraPosition, sceneData.cameraRotation);
 
-	skybox = std::make_shared<SkyBox>();
+	if (!skybox) {
+		skybox = std::make_shared<SkyBox>();
+	}
+
 	updateables.push_back(skybox);
 
 	for (std::size_t i = 0; i < sceneData.materials.size(); i++) 
 	{
+		if (materialPointers.find(sceneData.materials[i].materialKey) != materialPointers.end()) { continue; }
+
 		materialPointers.insert({ 
 			sceneData.materials[i].materialKey, 
 			std::make_unique<Material>(sceneData.materials[i].vertexShaderPath, sceneData.materials[i].fragmentShaderPath)
@@ -108,6 +112,8 @@ void Scene::CreateScene()
 
 	for (std::size_t i = 0; i < sceneData.models.size(); i++)
 	{
+		if (modelPointers.find(sceneData.models[i].modelKey) != modelPointers.end()) { continue; }
+
 		modelPointers.insert({ 
 			sceneData.models[i].modelKey, 
 			std::make_unique<Model>(sceneData.models[i].modelPath) 
@@ -123,10 +129,12 @@ void Scene::CreateScene()
 
 void Scene::DeleteScene()
 {
+	Camera::destroy();
 	materialPointers.clear();
 	modelPointers.clear();
 	updateables.clear();
 	renderObjects.clear();
+	skybox.reset();
 }
 
 void Scene::process()
