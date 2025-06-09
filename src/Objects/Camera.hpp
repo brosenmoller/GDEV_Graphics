@@ -14,10 +14,10 @@ public:
 		return instance_.get();
 	}
 
-	static void init(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation = glm::quat(glm::vec3(0, 0, 0))) {
+	static void init(glm::vec3 lightDirection, glm::vec3 position, float pitchDeg, float yawDeg) {
 		std::lock_guard<std::mutex> lock(initMutex_);
 		if (!instance_) {
-			instance_ = std::unique_ptr<Camera>(new Camera(lightDirection, position, rotation));
+			instance_ = std::unique_ptr<Camera>(new Camera(lightDirection, position, pitchDeg, yawDeg));
 		};
 	}
 
@@ -38,12 +38,13 @@ public:
 	glm::vec3 lightDirection;
 
 	float camYaw, camPitch;
+	bool firstMouseFrame;
 
 	void Update();
 	void UpdateCameraMovement();
 	void UpdateCameraLook();
 
-	Camera(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation = glm::quat(glm::vec3(0, 0, 0)));
+	Camera(glm::vec3 lightDirection, glm::vec3 position, float pitchDeg, float yawDeg);
 	~Camera() {}
 private:
 

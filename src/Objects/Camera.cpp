@@ -6,12 +6,18 @@
 std::unique_ptr<Camera> Camera::instance_ = nullptr;
 std::mutex Camera::initMutex_;
 
-Camera::Camera(glm::vec3 lightDirection, glm::vec3 position, glm::quat rotation) : lightDirection(lightDirection), Object(position, rotation)
+Camera::Camera(glm::vec3 lightDirection, glm::vec3 position, float pitchDeg, float yawDeg) 
+	: lightDirection(lightDirection),
+	camPitch(pitchDeg),
+	camYaw(yawDeg),
+	Object(position, glm::quat(glm::vec3(glm::radians(pitchDeg), glm::radians(yawDeg), 0.0f)))
 {
+	cameraForward = rotation * glm::vec3(0, 0, 1);
+	cameraUp = rotation * glm::vec3(0, 1, 0);
+
 	projection = glm::perspective(glm::radians(50.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 5000.0f);
-	camPitch = 0;
-	camYaw = 0;
 	view = glm::lookAt(position, position + cameraForward, cameraUp);
+	firstMouseFrame = true;
 }
 
 void Camera::Update()
@@ -55,6 +61,13 @@ void Camera::UpdateCameraMovement()
 void Camera::UpdateCameraLook()
 {
 	if (glm::length(Input::mouseDelta) < 0.01f) { return; }
+
+	if (firstMouseFrame)
+	{
+		Input::mouseDelta = glm::vec2(0.0f);
+		firstMouseFrame = false;
+		return;
+	}
 
 	camYaw -= Input::mouseDelta.x * 0.5f;
 	camPitch += Input::mouseDelta.y * 0.2f;

@@ -21,4 +21,6 @@ public:
 	static void Log(glm::mat3 value) { Log(glm::to_string(value)); }
 	static void Log(glm::mat4 value) { Log(glm::to_string(value)); }
 	static void Log(glm::quat value) { Log(glm::to_string(value)); }
+	static void Log(float value) { Log(std::to_string(value)); }
+	static void Log(int value) { Log(std::to_string(value)); }
 };

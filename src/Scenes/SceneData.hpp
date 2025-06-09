@@ -44,7 +44,9 @@ class SceneData
 {
 public:
 	glm::vec3 cameraPosition;
-	glm::vec3 cameraRotation;
+	float cameraPitch;
+	float cameraYaw;
+
 	glm::vec3 lightDirection;
 	SkyBoxData skyBox;
 	std::vector<MaterialData> materials;

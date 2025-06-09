@@ -21,9 +21,8 @@ Scene::Scene(std::string sceneDataPath)
 		? glm::vec3(j["cameraPosition"][0], j["cameraPosition"][1], j["cameraPosition"][2])
 		: glm::vec3(0, 0, 0);
 
-	sceneData.cameraRotation = j.contains("cameraRotation")
-		? glm::vec3(j["cameraRotation"][0], j["cameraRotation"][1], j["cameraRotation"][2])
-		: glm::vec3(0, 0, 0);
+	sceneData.cameraPitch = j.value("cameraPitch", 0.0f);
+	sceneData.cameraYaw = j.value("cameraYaw", 0.0f);
 
 	sceneData.lightDirection = j.contains("lightDirection")
 		? glm::vec3(j["lightDirection"][0], j["lightDirection"][1], j["lightDirection"][2])
@@ -92,7 +91,7 @@ void Scene::UpdateScene()
 
 void Scene::CreateScene()
 {
-	Camera::init(sceneData.lightDirection, sceneData.cameraPosition, sceneData.cameraRotation);
+	Camera::init(sceneData.lightDirection, sceneData.cameraPosition, sceneData.cameraPitch, sceneData.cameraYaw);
 
 	if (!skybox) {
 		skybox = std::make_shared<SkyBox>();
