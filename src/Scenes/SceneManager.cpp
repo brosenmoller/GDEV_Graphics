@@ -61,6 +61,7 @@ void SceneManager::LoadScene(std::string sceneName)
         return;
     }
 
+    // Move over relevant objects from the old scene and delete the rest
     if (scenes.find(activeScene) != scenes.end()) 
     {
         for (MaterialData materialData : scenes[sceneName]->sceneData.materials)
